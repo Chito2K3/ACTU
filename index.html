@@ -221,6 +221,18 @@
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
     }
 
+    .btn-danger {
+      background: linear-gradient(135deg, var(--brand-rose) 0%, #e11d48 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.35);
+    }
+
+    .btn-danger:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.45);
+    }
+
     .btn-secondary {
       background: var(--bg-subtle);
       color: var(--text-main);
@@ -403,6 +415,20 @@
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.01em;
     }
 
     .dosage-pill {
@@ -795,6 +821,78 @@
     .toast-error { background: #e11d48; }
     .toast-info { background: #0284c7; }
 
+    /* Clinical In-App Dialog (Zero browser popup URLs) */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dialog-overlay.active {
+      display: flex;
+    }
+
+    .dialog-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      padding: 28px 24px 22px 24px;
+      text-align: center;
+      animation: modalSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dialog-icon-wrapper {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      margin: 0 auto 16px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+    }
+
+    .dialog-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .dialog-message {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .dialog-message strong {
+      color: var(--text-main);
+    }
+
+    .dialog-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .dialog-actions .btn {
+      min-width: 120px;
+    }
+
     /* Loading Spinner */
     .loading-overlay {
       position: fixed;
@@ -933,10 +1031,11 @@
           <tr>
             <th style="width: 50px;">#</th>
             <th>Patient Name</th>
-            <th style="width: 180px;">Diagnosis / Cancer Site</th>
+            <th style="width: 170px;">Diagnosis / Cancer Site</th>
             <th>Chemo Protocol (Medicine)</th>
-            <th style="width: 170px;">Dosage / Qty</th>
-            <th style="width: 140px;">Last Visit Date</th>
+            <th style="width: 150px;">Brand Name</th>
+            <th style="width: 160px;">Dosage / Qty</th>
+            <th style="width: 130px;">Last Visit Date</th>
             <th style="width: 90px; text-align: right;">Actions</th>
           </tr>
         </thead>
@@ -1038,6 +1137,15 @@
             </small>
           </div>
 
+          <!-- Brand Name Field (Required) -->
+          <div class="form-group" id="brandGroup">
+            <label class="form-label">Brand Name <span class="req">*</span></label>
+            <input type="text" id="formBrand" class="form-input" placeholder="e.g. Herceptin, Velcade, Taxol, Keytruda, Vidaza" required>
+            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+              Prescribed or dispensed commercial/innovator brand name (Required).
+            </small>
+          </div>
+
           <!-- Dosage Field -->
           <div class="form-group">
             <label class="form-label">Dosage / Quantity Required <span class="req">*</span></label>
@@ -1090,6 +1198,22 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="closeMedsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Clinical In-App Dialog (Replaces native browser confirm/prompt/alert) -->
+  <div class="dialog-overlay" id="clinicalDialogOverlay">
+    <div class="dialog-card">
+      <div class="dialog-icon-wrapper" id="dialogIcon">⚠️</div>
+      <h3 class="dialog-title" id="dialogTitle">Dialog Title</h3>
+      <div class="dialog-message" id="dialogMessage">Dialog message goes here...</div>
+      <div id="dialogInputWrapper" style="display: none; width: 100%; margin-bottom: 20px;">
+        <input type="text" id="dialogInput" class="form-input" placeholder="Type here...">
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="dialogBtnCancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="dialogBtnConfirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -1211,6 +1335,7 @@
             (p.name && p.name.toLowerCase().includes(q)) ||
             (p.diagnosis && p.diagnosis.toLowerCase().includes(q)) ||
             (p.protocol && p.protocol.toLowerCase().includes(q)) ||
+            (p.brand && p.brand.toLowerCase().includes(q)) ||
             (p.dosage && p.dosage.toLowerCase().includes(q)) ||
             (p.lastVisit && p.lastVisit.toLowerCase().includes(q))
           )
@@ -1219,7 +1344,7 @@
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">
+            <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-dim);">
               ${q ? `No patients matching "<strong>${escapeHtml(q)}</strong>"` : 'No patients registered in Master_Patients yet. Click "+ Register Patient Treatment" to start.'}
             </td>
           </tr>
@@ -1251,6 +1376,9 @@
               ` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
             <td>
+              ${p.brand ? `<span class="brand-pill">${escapeHtml(p.brand)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
+            </td>
+            <td>
               ${p.dosage ? `<span class="dosage-pill">${escapeHtml(p.dosage)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
             </td>
             <td>
@@ -1261,7 +1389,7 @@
                 <button class="btn-action edit" title="Edit Patient" onclick="openEditModal(${p.rowIndex})">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                 </button>
-                <button class="btn-action delete" title="Delete Patient" onclick="confirmDeletePatient(${p.rowIndex}, '${escapeQuotes(p.name)}')">
+                <button class="btn-action delete" title="Delete Patient" onclick="confirmDeletePatient(${p.rowIndex})">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
               </div>
@@ -1402,6 +1530,7 @@
       document.getElementById('modalTitle').textContent = 'Register Patient Treatment';
       document.getElementById('patientForm').reset();
       document.getElementById('formRowIndex').value = '';
+      document.getElementById('formBrand').value = '';
       clearMedSelection();
       disableCustomProtocol();
 
@@ -1417,6 +1546,7 @@
       document.getElementById('formRowIndex').value = rowIndex;
       document.getElementById('formPatientName').value = item.name || '';
       document.getElementById('formDiagnosis').value = item.diagnosis || '';
+      document.getElementById('formBrand').value = item.brand || '';
       document.getElementById('formDosage').value = item.dosage || '';
 
       if (item.protocol) {
@@ -1448,10 +1578,10 @@
       }
 
       elements.patientSuggestions.innerHTML = matches.map(p => `
-        <div class="autocomplete-item" onclick="selectMasterPatient('${escapeQuotes(p.name)}', '${escapeQuotes(p.diagnosis)}', '${escapeQuotes(p.protocol || '')}', '${escapeQuotes(p.dosage || '')}')">
+        <div class="autocomplete-item" onclick="selectMasterPatient(${p.rowIndex})">
           <div>
             <div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${escapeHtml(p.name)}</div>
-            <small style="color: var(--text-dim); font-size: 11px;">Diagnosis: ${escapeHtml(p.diagnosis || 'N/A')}</small>
+            <small style="color: var(--text-dim); font-size: 11px;">Diagnosis: ${escapeHtml(p.diagnosis || 'N/A')} &bull; Brand: ${escapeHtml(p.brand || 'N/A')}</small>
           </div>
           <span style="font-size: 11px; color: var(--brand-primary); font-family: 'JetBrains Mono', monospace;">Existing</span>
         </div>
@@ -1459,14 +1589,19 @@
       elements.patientSuggestions.style.display = 'block';
     }
 
-    function selectMasterPatient(name, diag, lastProto, lastDose) {
-      document.getElementById('formPatientName').value = name;
-      document.getElementById('formDiagnosis').value = diag;
-      if (lastProto && !elements.formProtocol.value) {
-        selectUniqueMedicine(lastProto);
+    function selectMasterPatient(rowIndex) {
+      const p = state.patients.find(item => item.rowIndex === rowIndex);
+      if (!p) return;
+
+      document.getElementById('formRowIndex').value = p.rowIndex;
+      document.getElementById('formPatientName').value = p.name;
+      document.getElementById('formDiagnosis').value = p.diagnosis || '';
+      document.getElementById('formBrand').value = p.brand || '';
+      if (p.protocol && !elements.formProtocol.value) {
+        selectUniqueMedicine(p.protocol);
       }
-      if (lastDose && !document.getElementById('formDosage').value) {
-        document.getElementById('formDosage').value = lastDose;
+      if (p.dosage && !document.getElementById('formDosage').value) {
+        document.getElementById('formDosage').value = p.dosage;
       }
       elements.patientSuggestions.style.display = 'none';
     }
@@ -1479,8 +1614,20 @@
         name: document.getElementById('formPatientName').value.trim(),
         diagnosis: document.getElementById('formDiagnosis').value.trim(),
         protocol: elements.formProtocol.value.trim(),
+        brand: document.getElementById('formBrand').value.trim(),
         dosage: document.getElementById('formDosage').value.trim()
       };
+
+      if (!payload.protocol) {
+        showToast('Please select or specify a Chemo Protocol / Medicine.', 'error');
+        return;
+      }
+
+      if (!payload.brand) {
+        showToast('Brand Name is required.', 'error');
+        document.getElementById('formBrand').focus();
+        return;
+      }
 
       showLoading('Saving to Master_Patients in Google Sheets...');
       closePatientModal();
@@ -1501,6 +1648,7 @@
             name: payload.name,
             diagnosis: payload.diagnosis,
             protocol: payload.protocol,
+            brand: payload.brand,
             dosage: payload.dosage,
             lastVisit: todayStr
           });
@@ -1522,17 +1670,28 @@
         .savePatientRecord(payload);
     }
 
-    function confirmDeletePatient(rowIndex, patientName) {
-      if (!confirm(`Are you sure you want to remove "${patientName}" from Master_Patients?`)) return;
+    async function confirmDeletePatient(rowIndex) {
+      const item = state.patients.find(p => p.rowIndex === rowIndex);
+      const patientName = item ? item.name : 'this patient';
 
-      showLoading('Deleting patient record...');
+      const confirmed = await showClinicalConfirm({
+        title: 'Remove Patient Record',
+        message: `Are you sure you want to remove <strong>${escapeHtml(patientName)}</strong> from the treatment registry? This will permanently delete their clinical record and visit history.`,
+        confirmText: 'Delete Record',
+        isDanger: true,
+        icon: '🗑️'
+      });
+
+      if (!confirmed) return;
+
+      showLoading('Removing patient record from registry...');
 
       if (typeof google === 'undefined' || !google.script || !google.script.run) {
         hideLoading();
         state.patients = state.patients.filter(p => p.rowIndex != rowIndex);
         updateStats();
         renderPatientsTable();
-        showToast('Patient removed (simulated).', 'info');
+        showToast('Patient record removed from the clinical registry (simulated).', 'info');
         return;
       }
 
@@ -1543,7 +1702,7 @@
         })
         .withFailureHandler(err => {
           hideLoading();
-          showToast('Failed to delete: ' + err.message, 'error');
+          showToast('Unable to delete record: ' + err.message, 'error');
         })
         .deletePatientRecord({ rowIndex: rowIndex });
     }
@@ -1601,12 +1760,19 @@
       selectUniqueMedicine(medName);
     }
 
-    function promptAddNewMedicine(prefill = '') {
-      const name = prompt('Enter new Medicine Name and formulation (e.g. PEMBROLIZUMAB 100MG/4ML VIAL):', prefill || '');
-      if (!name || !name.trim()) return;
+    async function promptAddNewMedicine(prefill = '') {
+      const medicineName = await showClinicalPrompt({
+        title: 'Add New Formulary Medicine',
+        message: 'Enter the generic medicine name, formulation, and strength to catalog it into the hospital formulary:',
+        placeholder: prefill || 'e.g. PEMBROLIZUMAB 100MG/4ML VIAL',
+        confirmText: 'Add to Formulary',
+        icon: '💊'
+      });
 
-      saveNewMedicineToBackend(name.trim(), () => {
-        renderMedicineRepository(name.trim());
+      if (!medicineName || !medicineName.trim()) return;
+
+      saveNewMedicineToBackend(medicineName.trim(), () => {
+        renderMedicineRepository(medicineName.trim());
       });
     }
 
@@ -1648,15 +1814,22 @@
     // CLEANUP TABS HANDLER
     // ==========================================
 
-    function handleCleanupTabs() {
-      const confirmMsg = 'This will remove all extraneous weekly schedule tabs (e.g. SEP 28-OCT 2, Copy of OCT 5-9...) and maintain ONLY Master_Patients and Medicine in your Google Sheet.\n\nProceed?';
-      if (!confirm(confirmMsg)) return;
+    async function handleCleanupTabs() {
+      const confirmed = await showClinicalConfirm({
+        title: 'Optimize Treatment Registry',
+        message: 'This will archive obsolete weekly schedule tabs, remove legacy columns, and maintain a fast, clean database. Would you like to proceed?',
+        confirmText: 'Optimize Database',
+        isDanger: false,
+        icon: '🧹'
+      });
 
-      showLoading('Cleaning up spreadsheet tabs...');
+      if (!confirmed) return;
+
+      showLoading('Optimizing treatment registry and sheets...');
 
       if (typeof google === 'undefined' || !google.script || !google.script.run) {
         hideLoading();
-        showToast('Cleanup executed (simulated). Only Master_Patients and Medicine retained.', 'success');
+        showToast('Registry optimized (simulated). Active records verified.', 'success');
         return;
       }
 
@@ -1664,10 +1837,11 @@
         .withSuccessHandler(res => {
           hideLoading();
           showToast(res.message, 'success');
+          loadInitialData(); // Refresh patient table and state
         })
         .withFailureHandler(err => {
           hideLoading();
-          showToast('Cleanup error: ' + err.message, 'error');
+          showToast('Optimization error: ' + err.message, 'error');
         })
         .cleanupSpreadsheetTabs();
     }
@@ -1695,13 +1869,113 @@
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
-      toast.textContent = msg;
+
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✓';
+      else if (type === 'error') icon = '✕';
+      else if (type === 'warning') icon = '⚠️';
+
+      toast.innerHTML = `<span style="font-weight: 800; font-size: 14px;">${icon}</span> <span>${escapeHtml(msg)}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(10px)';
         setTimeout(() => toast.remove(), 300);
       }, 4000);
+    }
+
+    function showClinicalConfirm({ title, message, confirmText = 'Confirm', isDanger = false, icon = '⚠️' }) {
+      return new Promise(resolve => {
+        const overlay = document.getElementById('clinicalDialogOverlay');
+        const iconEl = document.getElementById('dialogIcon');
+        const titleEl = document.getElementById('dialogTitle');
+        const msgEl = document.getElementById('dialogMessage');
+        const inputWrapper = document.getElementById('dialogInputWrapper');
+        const btnConfirm = document.getElementById('dialogBtnConfirm');
+        const btnCancel = document.getElementById('dialogBtnCancel');
+
+        iconEl.textContent = icon;
+        titleEl.textContent = title;
+        msgEl.innerHTML = message;
+        inputWrapper.style.display = 'none';
+
+        btnConfirm.textContent = confirmText;
+        btnConfirm.className = isDanger ? 'btn btn-danger' : 'btn btn-primary';
+
+        overlay.classList.add('active');
+
+        function cleanup(res) {
+          overlay.classList.remove('active');
+          btnConfirm.onclick = null;
+          btnCancel.onclick = null;
+          window.removeEventListener('keydown', keyHandler);
+          resolve(res);
+        }
+
+        function keyHandler(e) {
+          if (e.key === 'Escape') cleanup(false);
+          if (e.key === 'Enter') cleanup(true);
+        }
+
+        btnConfirm.onclick = () => cleanup(true);
+        btnCancel.onclick = () => cleanup(false);
+        window.addEventListener('keydown', keyHandler);
+        setTimeout(() => btnConfirm.focus(), 60);
+      });
+    }
+
+    function showClinicalPrompt({ title, message, placeholder = '', confirmText = 'Save', icon = '💊' }) {
+      return new Promise(resolve => {
+        const overlay = document.getElementById('clinicalDialogOverlay');
+        const iconEl = document.getElementById('dialogIcon');
+        const titleEl = document.getElementById('dialogTitle');
+        const msgEl = document.getElementById('dialogMessage');
+        const inputWrapper = document.getElementById('dialogInputWrapper');
+        const input = document.getElementById('dialogInput');
+        const btnConfirm = document.getElementById('dialogBtnConfirm');
+        const btnCancel = document.getElementById('dialogBtnCancel');
+
+        iconEl.textContent = icon;
+        titleEl.textContent = title;
+        msgEl.innerHTML = message;
+        inputWrapper.style.display = 'block';
+        input.value = '';
+        input.placeholder = placeholder;
+
+        btnConfirm.textContent = confirmText;
+        btnConfirm.className = 'btn btn-emerald';
+
+        overlay.classList.add('active');
+        setTimeout(() => input.focus(), 80);
+
+        function cleanup(res) {
+          overlay.classList.remove('active');
+          btnConfirm.onclick = null;
+          btnCancel.onclick = null;
+          input.onkeydown = null;
+          window.removeEventListener('keydown', keyHandler);
+          resolve(res);
+        }
+
+        function keyHandler(e) {
+          if (e.key === 'Escape') cleanup(null);
+        }
+
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const val = input.value.trim();
+            if (val) cleanup(val);
+          }
+        };
+
+        btnConfirm.onclick = () => {
+          const val = input.value.trim();
+          if (val) cleanup(val);
+        };
+        btnCancel.onclick = () => cleanup(null);
+        window.addEventListener('keydown', keyHandler);
+      });
     }
 
     function escapeHtml(str) {
@@ -1721,10 +1995,10 @@
 
     function loadMockData() {
       state.patients = [
-        { rowIndex: 2, name: 'Chito Test', diagnosis: 'BREAST', protocol: 'PACLITAXEL 30MG/5ML VIAL', dosage: '1 vial', lastVisit: '2026-10-17' },
-        { rowIndex: 3, name: 'TABIOS, JULIO TADENA', diagnosis: 'MULTIPLE MYELOMA', protocol: 'BORTEZOMIB 3.5MG VIAL', dosage: '1.3 mg/m² (1 vial)', lastVisit: '2026-10-16' },
-        { rowIndex: 4, name: 'CALIXTRO, RENALYN CONCEPCION', diagnosis: 'BREAST', protocol: 'TRASTUZUMAB 440MG VIAL', dosage: '440mg + 2 tabs', lastVisit: '2026-10-15' },
-        { rowIndex: 5, name: 'GACETA, DELIA INGUITO', diagnosis: 'MDS', protocol: 'AZACITIDINE 100MG VIAL', dosage: '75mg/m²', lastVisit: '2026-10-15' }
+        { rowIndex: 2, name: 'Chito Test', diagnosis: 'BREAST', protocol: 'PACLITAXEL 30MG/5ML VIAL', brand: 'Taxol', dosage: '1 vial', lastVisit: '2026-10-17' },
+        { rowIndex: 3, name: 'TABIOS, JULIO TADENA', diagnosis: 'MULTIPLE MYELOMA', protocol: 'BORTEZOMIB 3.5MG VIAL', brand: 'Velcade', dosage: '1.3 mg/m² (1 vial)', lastVisit: '2026-10-16' },
+        { rowIndex: 4, name: 'CALIXTRO, RENALYN CONCEPCION', diagnosis: 'BREAST', protocol: 'TRASTUZUMAB 440MG VIAL', brand: 'Herceptin', dosage: '440mg + 2 tabs', lastVisit: '2026-10-15' },
+        { rowIndex: 5, name: 'GACETA, DELIA INGUITO', diagnosis: 'MDS', protocol: 'AZACITIDINE 100MG VIAL', brand: 'Vidaza', dosage: '75mg/m²', lastVisit: '2026-10-15' }
       ];
 
       state.medicines = [

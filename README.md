@@ -9,7 +9,8 @@ A modern, responsive Google Apps Script Single-Page Application (SPA) designed f
 
 * **Direct Patient Treatment Registry**:
   * Connected directly to `Master_Patients` in Google Sheets.
-  * Real-time search across Patient Name, Diagnosis, Medicine Protocol, Dosage, and Last Visit Date.
+  * Real-time search across Patient Name, Diagnosis, Medicine Protocol, Brand Name, Dosage, and Last Visit Date.
+  * Captures required commercial/innovator **Brand Name** (e.g. *Herceptin, Velcade, Taxol, Vidaza*).
   * Instant auto-fill of returning patient details.
 
 * **Deduplicated Medicine Repository**:
@@ -27,7 +28,7 @@ A modern, responsive Google Apps Script Single-Page Application (SPA) designed f
   * Maintains only two essential tabs in Google Sheets:
     1. `Master_Patients`: Central clinical registry.
     2. `Medicine`: Formulary repository.
-  * Built-in `🧹 Clean Tabs` utility to eliminate obsolete weekly schedule tabs.
+  * Built-in `🧹 Clean Tabs` utility to eliminate obsolete weekly schedule tabs and remove the legacy `Hospital Number` column from `Master_Patients`.
 
 ---
 

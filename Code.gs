@@ -76,9 +76,35 @@ function ensureRequiredSheets(ss) {
   let masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (!masterSheet) {
     masterSheet = ss.insertSheet(CONFIG.MASTER_PATIENT_SHEET);
-    masterSheet.appendRow(['Patient Name', 'Diagnosis', 'Protocol', 'Dosage', 'Last Visit', 'Created Date']);
-    masterSheet.getRange(1, 1, 1, 6).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
+    masterSheet.appendRow(['Patient Name', 'Diagnosis', 'Protocol', 'Brand Name', 'Dosage', 'Last Visit', 'Created Date']);
+    masterSheet.getRange(1, 1, 1, 7).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
     masterSheet.setFrozenRows(1);
+  } else {
+    // If sheet exists, ensure Brand Name column is present
+    const lastCol = masterSheet.getLastColumn();
+    if (lastCol > 0) {
+      const headers = masterSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+      const hasBrand = headers.some(function(h) {
+        return String(h || '').toUpperCase().includes('BRAND');
+      });
+      if (!hasBrand) {
+        let protoIdx = -1;
+        for (let i = 0; i < headers.length; i++) {
+          if (String(headers[i] || '').toUpperCase().includes('PROTOCOL')) {
+            protoIdx = i;
+            break;
+          }
+        }
+        // Insert right after Protocol column, or as column 5
+        const insertAfterCol = protoIdx !== -1 ? protoIdx + 1 : Math.min(lastCol, 4);
+        masterSheet.insertColumnAfter(insertAfterCol);
+        const headerCell = masterSheet.getRange(1, insertAfterCol + 1);
+        headerCell.setValue('Brand Name')
+          .setBackground(CONFIG.COLORS.HEADER_BLUE)
+          .setFontColor('#FFFFFF')
+          .setFontWeight('bold');
+      }
+    }
   }
 
   let medSheet = ss.getSheetByName(CONFIG.MEDICINE_SHEET);
@@ -96,14 +122,17 @@ function ensureRequiredSheets(ss) {
 
 /**
  * Dynamically resolves column indices in Master_Patients to accommodate
- * existing sheets whether 'Hospital Number' is present or not.
+ * existing sheets whether 'Hospital Number' or 'Brand Name' is present.
  */
 function getMasterPatientColumnMap(sheet) {
-  const headers = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 7)).getValues()[0];
+  const lastCol = sheet.getLastColumn();
+  const maxCols = Math.min(Math.max(lastCol, 8), sheet.getMaxColumns());
+  const headers = maxCols > 0 ? sheet.getRange(1, 1, 1, maxCols).getValues()[0] : [];
   const map = {
     nameCol: -1,
     diagCol: -1,
     protoCol: -1,
+    brandCol: -1,
     dosageCol: -1,
     lastVisitCol: -1,
     createdCol: -1,
@@ -115,19 +144,21 @@ function getMasterPatientColumnMap(sheet) {
     if (h.includes('PATIENT NAME') || h === 'NAME') map.nameCol = c;
     else if (h.includes('DIAGNOSIS')) map.diagCol = c;
     else if (h.includes('PROTOCOL')) map.protoCol = c;
+    else if (h.includes('BRAND')) map.brandCol = c;
     else if (h.includes('DOSAGE')) map.dosageCol = c;
     else if (h.includes('LAST VISIT') || h === 'VISIT') map.lastVisitCol = c;
     else if (h.includes('CREATED')) map.createdCol = c;
     else if (h.includes('HOSPITAL')) map.hospCol = c;
   }
 
-  // Fallbacks if headers were generic
-  if (map.nameCol === -1) map.nameCol = 0;
-  if (map.diagCol === -1) map.diagCol = 1;
-  if (map.protoCol === -1) map.protoCol = 2;
-  if (map.dosageCol === -1) map.dosageCol = 3;
-  if (map.lastVisitCol === -1) map.lastVisitCol = 4;
-  if (map.createdCol === -1) map.createdCol = 5;
+  // Fallbacks if headers were generic or not yet labeled
+  if (map.nameCol === -1) map.nameCol = map.hospCol === 0 ? 1 : 0;
+  if (map.diagCol === -1) map.diagCol = map.nameCol + 1;
+  if (map.protoCol === -1) map.protoCol = map.diagCol + 1;
+  if (map.brandCol === -1) map.brandCol = map.protoCol + 1;
+  if (map.dosageCol === -1) map.dosageCol = map.brandCol + 1;
+  if (map.lastVisitCol === -1) map.lastVisitCol = map.dosageCol + 1;
+  if (map.createdCol === -1) map.createdCol = map.lastVisitCol + 1;
 
   return map;
 }
@@ -155,6 +186,7 @@ function getPatientsList() {
 
     const diag = String(row[colMap.diagCol] || '').trim();
     const proto = String(row[colMap.protoCol] || '').trim();
+    const brand = colMap.brandCol >= 0 ? String(row[colMap.brandCol] || '').trim() : '';
     const dosage = String(row[colMap.dosageCol] || '').trim();
     
     // Format Last Visit cleanly
@@ -171,6 +203,7 @@ function getPatientsList() {
       name: name,
       diagnosis: diag,
       protocol: proto,
+      brand: brand,
       dosage: dosage,
       lastVisit: lastVisitStr
     });
@@ -188,6 +221,9 @@ function savePatientRecord(payload) {
   if (!payload || !payload.name) {
     throw new Error('Patient name is required.');
   }
+  if (!payload.brand || !payload.brand.trim()) {
+    throw new Error('Brand Name is required.');
+  }
 
   const ss = getSpreadsheet();
   ensureRequiredSheets(ss);
@@ -198,6 +234,7 @@ function savePatientRecord(payload) {
   const targetName = payload.name.trim();
   const diagnosis = (payload.diagnosis || '').trim();
   const protocol = (payload.protocol || '').trim();
+  const brand = payload.brand.trim();
   const dosage = (payload.dosage || '').trim();
 
   let targetRow = parseInt(payload.rowIndex, 10);
@@ -221,22 +258,24 @@ function savePatientRecord(payload) {
     sheet.getRange(targetRow, colMap.nameCol + 1).setValue(targetName);
     if (colMap.diagCol >= 0) sheet.getRange(targetRow, colMap.diagCol + 1).setValue(diagnosis);
     if (colMap.protoCol >= 0) sheet.getRange(targetRow, colMap.protoCol + 1).setValue(protocol);
+    if (colMap.brandCol >= 0) sheet.getRange(targetRow, colMap.brandCol + 1).setValue(brand);
     if (colMap.dosageCol >= 0) sheet.getRange(targetRow, colMap.dosageCol + 1).setValue(dosage);
     if (colMap.lastVisitCol >= 0) sheet.getRange(targetRow, colMap.lastVisitCol + 1).setValue(todayStr);
 
     return {
       success: true,
-      message: 'Patient record for "' + targetName + '" updated successfully.',
+      message: 'Treatment visit for "' + targetName + '" recorded successfully.',
       rowIndex: targetRow
     };
   }
 
   // Append new row
-  const maxCols = Math.max(sheet.getLastColumn(), 6);
+  const maxCols = Math.max(sheet.getLastColumn(), 7);
   const newRow = new Array(maxCols).fill('');
   newRow[colMap.nameCol] = targetName;
   if (colMap.diagCol >= 0) newRow[colMap.diagCol] = diagnosis;
   if (colMap.protoCol >= 0) newRow[colMap.protoCol] = protocol;
+  if (colMap.brandCol >= 0) newRow[colMap.brandCol] = brand;
   if (colMap.dosageCol >= 0) newRow[colMap.dosageCol] = dosage;
   if (colMap.lastVisitCol >= 0) newRow[colMap.lastVisitCol] = todayStr;
   if (colMap.createdCol >= 0) newRow[colMap.createdCol] = todayStr;
@@ -245,7 +284,7 @@ function savePatientRecord(payload) {
 
   return {
     success: true,
-    message: 'New patient "' + targetName + '" registered successfully.',
+    message: 'Patient "' + targetName + '" successfully enrolled in the Cancer Treatment Registry.',
     rowIndex: sheet.getLastRow()
   };
 }
@@ -256,15 +295,15 @@ function savePatientRecord(payload) {
 function deletePatientRecord(payload) {
   const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
-  if (!sheet) throw new Error('Master_Patients sheet not found.');
+  if (!sheet) throw new Error('Patient registry sheet not found.');
 
   const targetRow = parseInt(payload.rowIndex, 10);
   if (!targetRow || targetRow < 2 || targetRow > sheet.getLastRow()) {
-    throw new Error('Invalid row index: ' + targetRow);
+    throw new Error('Invalid record selected for deletion.');
   }
 
   sheet.deleteRow(targetRow);
-  return { success: true, message: 'Patient removed from records.' };
+  return { success: true, message: 'Patient record removed from the clinical registry.' };
 }
 
 // ==========================================
@@ -329,7 +368,7 @@ function addNewMedicine(medicineName) {
           success: true,
           medicineName: String(existing[i][0]).trim(),
           alreadyExisted: true,
-          message: 'Medicine already exists in repository.'
+          message: 'Medicine already exists in the hospital formulary.'
         };
       }
     }
@@ -347,17 +386,18 @@ function addNewMedicine(medicineName) {
     medicineName: cleanName,
     newCode: newCode,
     alreadyExisted: false,
-    message: 'Medicine "' + cleanName + '" added to repository successfully.'
+    message: 'Medicine "' + cleanName + '" added to hospital formulary successfully.'
   };
 }
 
 // ==========================================
-// SPREADSHEET TAB CLEANUP UTILITY
+// SPREADSHEET TAB & COLUMN CLEANUP UTILITY
 // ==========================================
 
 /**
  * Maintains ONLY Master_Patients and Medicine tabs,
- * removing all extraneous weekly schedule tabs (SEP 28-OCT 2, Copy of OCT 5-9, etc.)
+ * removes all extraneous weekly schedule tabs (SEP 28-OCT 2, Copy of OCT 5-9, etc.),
+ * and removes obsolete columns like 'Hospital Number' from Master_Patients.
  */
 function cleanupSpreadsheetTabs() {
   const ss = getSpreadsheet();
@@ -365,6 +405,7 @@ function cleanupSpreadsheetTabs() {
   const sheets = ss.getSheets();
   const deletedTabs = [];
 
+  // 1. Delete extraneous weekly tabs
   sheets.forEach(sheet => {
     const name = sheet.getName();
     if (name !== CONFIG.MASTER_PATIENT_SHEET && name !== CONFIG.MEDICINE_SHEET) {
@@ -373,10 +414,36 @@ function cleanupSpreadsheetTabs() {
     }
   });
 
+  // 2. Remove 'Hospital Number' column(s) from Master_Patients
+  let hospColRemoved = false;
+  const masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
+  if (masterSheet && masterSheet.getLastColumn() > 0) {
+    const lastCol = masterSheet.getLastColumn();
+    const headers = masterSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    // Iterate backwards so deleting columns doesn't alter remaining target indices
+    for (let c = headers.length - 1; c >= 0; c--) {
+      const h = String(headers[c] || '').toUpperCase().trim();
+      if (h.includes('HOSPITAL')) {
+        masterSheet.deleteColumn(c + 1);
+        hospColRemoved = true;
+      }
+    }
+  }
+
+  let message = 'Cleanup complete. Retained only Master_Patients and Medicine tabs.';
+  if (deletedTabs.length > 0 && hospColRemoved) {
+    message = 'Cleanup complete! Removed ' + deletedTabs.length + ' obsolete tabs and deleted Hospital Number column.';
+  } else if (hospColRemoved) {
+    message = 'Cleanup complete! Hospital Number column successfully removed from Master_Patients.';
+  } else if (deletedTabs.length > 0) {
+    message = 'Cleanup complete! Removed ' + deletedTabs.length + ' obsolete tabs.';
+  }
+
   return {
     success: true,
     deletedCount: deletedTabs.length,
     deletedTabs: deletedTabs,
-    message: 'Cleanup complete. Retained only Master_Patients and Medicine tabs.'
+    hospitalColumnRemoved: hospColRemoved,
+    message: message
   };
 }

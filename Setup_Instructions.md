@@ -10,7 +10,7 @@ This guide details the streamlined setup and deployment of the **ARMMC ACTU Pati
 * **Institution Title**: **Amang Rodriguez Memorial Medical Center**
 * **Department**: Ambulatory Cancer Treatment Unit (ACTU)
 * **Spreadsheet Tabs Maintained**: Only **2 tabs**:
-  1. **`Master_Patients`**: The primary database storing Patient Name, Diagnosis, Protocol, Dosage, and Last Visit date.
+  1. **`Master_Patients`**: The primary database storing Patient Name, Diagnosis, Protocol, Brand Name, Dosage, and Last Visit date.
   2. **`Medicine`**: The formulary source listing all available medicines.
 * **Key Features**:
   * **Direct Patient CRUD**: Add, edit, or delete patient records directly in `Master_Patients`.
@@ -46,6 +46,8 @@ This guide details the streamlined setup and deployment of the **ARMMC ACTU Pati
 
 ---
 
-## 3. How to Clean Up the Google Sheet Tabs
+## 3. How to Clean Up the Google Sheet Tabs & Obsolete Columns
 In the top right header of the web app, click **`🧹 Clean Tabs`**.
-The system will automatically remove all obsolete weekly tabs (`SEP 28-OCT 2`, `Copy of OCT...`), leaving exclusively `Master_Patients` and `Medicine`.
+The system will automatically:
+1. Remove all obsolete weekly tabs (`SEP 28-OCT 2`, `Copy of OCT...`), leaving exclusively `Master_Patients` and `Medicine`.
+2. Permanently delete the obsolete **`Hospital Number`** column from `Master_Patients`, cleanly shifting `Patient Name` into Column A.
