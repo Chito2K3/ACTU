@@ -5,7 +5,10 @@
  *
  * Core Architecture:
  * - Direct Patient-Centric CRUD against Master_Patients
+ * - Multi-Schedule Chemo Therapy Tracking per Patient
  * - Automatic Last Visit date recording
+ * - Comprehensive Clinical Batch Tracking (Lot Number & Expiry Date)
+ * - Separated Clinical Dosage and Quantity Required
  * - Unique Medicine Formulary Engine (Deduplicated, pure medicine names without DMR codes)
  * - On-the-Fly Medicine Addition to the Medicine repository
  * - Automated Spreadsheet Tab Cleanup (Retaining ONLY Master_Patients and Medicine)
@@ -51,7 +54,7 @@ function getSpreadsheet() {
 
 /**
  * Loads all initial application state:
- * - Patient records from Master_Patients
+ * - Patient session records from Master_Patients
  * - Unique deduplicated medicines from Medicine
  */
 function getInitialData() {
@@ -71,38 +74,52 @@ function getInitialData() {
 
 /**
  * Ensures Master_Patients and Medicine sheets exist with proper headers.
+ * Seamlessly adds missing clinical columns without altering or losing existing rows.
  */
 function ensureRequiredSheets(ss) {
   let masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (!masterSheet) {
     masterSheet = ss.insertSheet(CONFIG.MASTER_PATIENT_SHEET);
-    masterSheet.appendRow(['Patient Name', 'Diagnosis', 'Protocol', 'Brand Name', 'Dosage', 'Last Visit', 'Created Date']);
-    masterSheet.getRange(1, 1, 1, 7).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
+    masterSheet.appendRow([
+      'Patient Name',
+      'Diagnosis',
+      'Therapy Schedule',
+      'Chemo Protocol',
+      'Brand Name',
+      'Lot Number',
+      'Expiry Date',
+      'Dosage',
+      'Quantity Required',
+      'Created Date',
+      'Last Visit'
+    ]);
+    masterSheet.getRange(1, 1, 1, 11).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
     masterSheet.setFrozenRows(1);
   } else {
-    // If sheet exists, ensure Brand Name column is present
+    // If sheet exists, ensure all required columns are present
     const lastCol = masterSheet.getLastColumn();
     if (lastCol > 0) {
-      const headers = masterSheet.getRange(1, 1, 1, lastCol).getValues()[0];
-      const hasBrand = headers.some(function(h) {
-        return String(h || '').toUpperCase().includes('BRAND');
+      const headers = masterSheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) {
+        return String(h || '').toUpperCase().trim();
       });
-      if (!hasBrand) {
-        let protoIdx = -1;
-        for (let i = 0; i < headers.length; i++) {
-          if (String(headers[i] || '').toUpperCase().includes('PROTOCOL')) {
-            protoIdx = i;
-            break;
-          }
+      const missingHeaders = [];
+
+      if (!headers.some(function(h) { return h.includes('SCHEDULE'); })) missingHeaders.push('Therapy Schedule');
+      if (!headers.some(function(h) { return h.includes('BRAND'); })) missingHeaders.push('Brand Name');
+      if (!headers.some(function(h) { return h.includes('LOT'); })) missingHeaders.push('Lot Number');
+      if (!headers.some(function(h) { return h.includes('EXPIR'); })) missingHeaders.push('Expiry Date');
+      if (!headers.some(function(h) { return h.includes('QUANTITY') || h === 'QTY'; })) missingHeaders.push('Quantity Required');
+
+      if (missingHeaders.length > 0) {
+        const currentLast = masterSheet.getLastColumn();
+        for (let i = 0; i < missingHeaders.length; i++) {
+          const colIdx = currentLast + 1 + i;
+          masterSheet.getRange(1, colIdx)
+            .setValue(missingHeaders[i])
+            .setBackground(CONFIG.COLORS.HEADER_BLUE)
+            .setFontColor('#FFFFFF')
+            .setFontWeight('bold');
         }
-        // Insert right after Protocol column, or as column 5
-        const insertAfterCol = protoIdx !== -1 ? protoIdx + 1 : Math.min(lastCol, 4);
-        masterSheet.insertColumnAfter(insertAfterCol);
-        const headerCell = masterSheet.getRange(1, insertAfterCol + 1);
-        headerCell.setValue('Brand Name')
-          .setBackground(CONFIG.COLORS.HEADER_BLUE)
-          .setFontColor('#FFFFFF')
-          .setFontWeight('bold');
       }
     }
   }
@@ -117,23 +134,27 @@ function ensureRequiredSheets(ss) {
 }
 
 // ==========================================
-// MASTER PATIENTS CRUD
+// MASTER PATIENTS CRUD & MULTI-SCHEDULE ENGINE
 // ==========================================
 
 /**
  * Dynamically resolves column indices in Master_Patients to accommodate
- * existing sheets whether 'Hospital Number' or 'Brand Name' is present.
+ * existing sheets whether headers are 'Last Protocol', 'Last Dosage', etc.
  */
 function getMasterPatientColumnMap(sheet) {
   const lastCol = sheet.getLastColumn();
-  const maxCols = Math.min(Math.max(lastCol, 8), sheet.getMaxColumns());
+  const maxCols = Math.min(Math.max(lastCol, 15), sheet.getMaxColumns());
   const headers = maxCols > 0 ? sheet.getRange(1, 1, 1, maxCols).getValues()[0] : [];
   const map = {
     nameCol: -1,
     diagCol: -1,
+    schedCol: -1,
     protoCol: -1,
     brandCol: -1,
+    lotCol: -1,
+    expiryCol: -1,
     dosageCol: -1,
+    qtyCol: -1,
     lastVisitCol: -1,
     createdCol: -1,
     hospCol: -1
@@ -143,8 +164,12 @@ function getMasterPatientColumnMap(sheet) {
     const h = String(headers[c] || '').toUpperCase().trim();
     if (h.includes('PATIENT NAME') || h === 'NAME') map.nameCol = c;
     else if (h.includes('DIAGNOSIS')) map.diagCol = c;
+    else if (h.includes('SCHEDULE') || h.includes('THERAPY SCHEDULE')) map.schedCol = c;
     else if (h.includes('PROTOCOL')) map.protoCol = c;
     else if (h.includes('BRAND')) map.brandCol = c;
+    else if (h.includes('LOT')) map.lotCol = c;
+    else if (h.includes('EXPIR') || h.includes('EXPIRY')) map.expiryCol = c;
+    else if (h.includes('QUANTITY') || h === 'QTY' || h.includes('QTY')) map.qtyCol = c;
     else if (h.includes('DOSAGE')) map.dosageCol = c;
     else if (h.includes('LAST VISIT') || h === 'VISIT') map.lastVisitCol = c;
     else if (h.includes('CREATED')) map.createdCol = c;
@@ -164,10 +189,11 @@ function getMasterPatientColumnMap(sheet) {
 }
 
 /**
- * Retrieves all patients from Master_Patients.
+ * Retrieves all patient treatment schedule records from Master_Patients.
  */
 function getPatientsList() {
   const ss = getSpreadsheet();
+  ensureRequiredSheets(ss);
   const sheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (!sheet) return [];
 
@@ -184,41 +210,68 @@ function getPatientsList() {
     const name = String(row[colMap.nameCol] || '').trim();
     if (!name) continue;
 
-    const diag = String(row[colMap.diagCol] || '').trim();
-    const proto = String(row[colMap.protoCol] || '').trim();
+    const diag = colMap.diagCol >= 0 ? String(row[colMap.diagCol] || '').trim() : '';
+    const proto = colMap.protoCol >= 0 ? String(row[colMap.protoCol] || '').trim() : '';
     const brand = colMap.brandCol >= 0 ? String(row[colMap.brandCol] || '').trim() : '';
-    const dosage = String(row[colMap.dosageCol] || '').trim();
-    
-    // Format Last Visit cleanly
-    let lastVisit = row[colMap.lastVisitCol];
+    const lot = colMap.lotCol >= 0 ? String(row[colMap.lotCol] || '').trim() : '';
+    const dosage = colMap.dosageCol >= 0 ? String(row[colMap.dosageCol] || '').trim() : '';
+    const qty = colMap.qtyCol >= 0 ? String(row[colMap.qtyCol] || '').trim() : '';
+
+    // Format dates cleanly YYYY-MM-DD
+    let scheduleStr = '';
+    if (colMap.schedCol >= 0) {
+      const schedVal = row[colMap.schedCol];
+      if (schedVal instanceof Date && !isNaN(schedVal.getTime())) {
+        scheduleStr = Utilities.formatDate(schedVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+      } else {
+        scheduleStr = String(schedVal || '').trim();
+      }
+    }
+
+    let expiryStr = '';
+    if (colMap.expiryCol >= 0) {
+      const expVal = row[colMap.expiryCol];
+      if (expVal instanceof Date && !isNaN(expVal.getTime())) {
+        expiryStr = Utilities.formatDate(expVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+      } else {
+        expiryStr = String(expVal || '').trim();
+      }
+    }
+
     let lastVisitStr = '';
-    if (lastVisit instanceof Date && !isNaN(lastVisit.getTime())) {
-      lastVisitStr = Utilities.formatDate(lastVisit, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-    } else {
-      lastVisitStr = String(lastVisit || '').trim();
+    if (colMap.lastVisitCol >= 0) {
+      const visitVal = row[colMap.lastVisitCol];
+      if (visitVal instanceof Date && !isNaN(visitVal.getTime())) {
+        lastVisitStr = Utilities.formatDate(visitVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+      } else {
+        lastVisitStr = String(visitVal || '').trim();
+      }
     }
 
     patients.push({
       rowIndex: i + 2, // 1-indexed sheet row
       name: name,
       diagnosis: diag,
+      scheduleDate: scheduleStr || lastVisitStr, // Fallback to last visit date if schedule date was empty
       protocol: proto,
       brand: brand,
+      lotNumber: lot,
+      expiryDate: expiryStr,
       dosage: dosage,
+      quantity: qty,
       lastVisit: lastVisitStr
     });
   }
 
-  // Sort by most recent visit or alphabetically
   return patients;
 }
 
 /**
- * Saves (appends or updates) a patient record in Master_Patients.
- * Automatically stamps Last Visit with today's date.
+ * Saves (appends or updates) a patient treatment schedule record in Master_Patients.
+ * Supports updating an existing session row or appending a new schedule date entry.
  */
 function savePatientRecord(payload) {
-  if (!payload || !payload.name) {
+  if (!payload || !payload.name || !payload.name.trim()) {
     throw new Error('Patient name is required.');
   }
   if (!payload.brand || !payload.brand.trim()) {
@@ -233,64 +286,62 @@ function savePatientRecord(payload) {
 
   const targetName = payload.name.trim();
   const diagnosis = (payload.diagnosis || '').trim();
+  const scheduleDate = (payload.scheduleDate || todayStr).trim();
   const protocol = (payload.protocol || '').trim();
   const brand = payload.brand.trim();
+  const lotNumber = (payload.lotNumber || '').trim();
+  const expiryDate = (payload.expiryDate || '').trim();
   const dosage = (payload.dosage || '').trim();
+  const quantity = (payload.quantity || '').trim();
 
   let targetRow = parseInt(payload.rowIndex, 10);
 
-  // If no explicit rowIndex passed, check if patient name already exists to update
-  if (!targetRow || isNaN(targetRow)) {
-    const lastRow = sheet.getLastRow();
-    if (lastRow >= 2) {
-      const names = sheet.getRange(2, colMap.nameCol + 1, lastRow - 1, 1).getValues();
-      for (let i = 0; i < names.length; i++) {
-        if (String(names[i][0] || '').trim().toLowerCase() === targetName.toLowerCase()) {
-          targetRow = i + 2;
-          break;
-        }
-      }
-    }
-  }
-
-  if (targetRow && targetRow >= 2) {
-    // Update existing row
-    sheet.getRange(targetRow, colMap.nameCol + 1).setValue(targetName);
+  // If updating an existing session row
+  if (targetRow && targetRow >= 2 && !payload.isNewScheduleEntry) {
+    if (colMap.nameCol >= 0) sheet.getRange(targetRow, colMap.nameCol + 1).setValue(targetName);
     if (colMap.diagCol >= 0) sheet.getRange(targetRow, colMap.diagCol + 1).setValue(diagnosis);
+    if (colMap.schedCol >= 0) sheet.getRange(targetRow, colMap.schedCol + 1).setValue(scheduleDate);
     if (colMap.protoCol >= 0) sheet.getRange(targetRow, colMap.protoCol + 1).setValue(protocol);
     if (colMap.brandCol >= 0) sheet.getRange(targetRow, colMap.brandCol + 1).setValue(brand);
+    if (colMap.lotCol >= 0) sheet.getRange(targetRow, colMap.lotCol + 1).setValue(lotNumber);
+    if (colMap.expiryCol >= 0) sheet.getRange(targetRow, colMap.expiryCol + 1).setValue(expiryDate);
     if (colMap.dosageCol >= 0) sheet.getRange(targetRow, colMap.dosageCol + 1).setValue(dosage);
+    if (colMap.qtyCol >= 0) sheet.getRange(targetRow, colMap.qtyCol + 1).setValue(quantity);
     if (colMap.lastVisitCol >= 0) sheet.getRange(targetRow, colMap.lastVisitCol + 1).setValue(todayStr);
 
     return {
       success: true,
-      message: 'Treatment visit for "' + targetName + '" recorded successfully.',
+      message: 'Treatment schedule for "' + targetName + '" (' + scheduleDate + ') updated successfully.',
       rowIndex: targetRow
     };
   }
 
-  // Append new row
-  const maxCols = Math.max(sheet.getLastColumn(), 7);
+  // Otherwise, append a new row for this therapy schedule session
+  const maxCols = Math.max(sheet.getLastColumn(), 11);
   const newRow = new Array(maxCols).fill('');
-  newRow[colMap.nameCol] = targetName;
+  if (colMap.nameCol >= 0) newRow[colMap.nameCol] = targetName;
   if (colMap.diagCol >= 0) newRow[colMap.diagCol] = diagnosis;
+  if (colMap.schedCol >= 0) newRow[colMap.schedCol] = scheduleDate;
   if (colMap.protoCol >= 0) newRow[colMap.protoCol] = protocol;
   if (colMap.brandCol >= 0) newRow[colMap.brandCol] = brand;
+  if (colMap.lotCol >= 0) newRow[colMap.lotCol] = lotNumber;
+  if (colMap.expiryCol >= 0) newRow[colMap.expiryCol] = expiryDate;
   if (colMap.dosageCol >= 0) newRow[colMap.dosageCol] = dosage;
-  if (colMap.lastVisitCol >= 0) newRow[colMap.lastVisitCol] = todayStr;
+  if (colMap.qtyCol >= 0) newRow[colMap.qtyCol] = quantity;
   if (colMap.createdCol >= 0) newRow[colMap.createdCol] = todayStr;
+  if (colMap.lastVisitCol >= 0) newRow[colMap.lastVisitCol] = todayStr;
 
   sheet.appendRow(newRow);
 
   return {
     success: true,
-    message: 'Patient "' + targetName + '" successfully enrolled in the Cancer Treatment Registry.',
+    message: 'New therapy schedule for "' + targetName + '" (' + scheduleDate + ') recorded successfully.',
     rowIndex: sheet.getLastRow()
   };
 }
 
 /**
- * Deletes a patient row from Master_Patients.
+ * Deletes a patient treatment schedule row from Master_Patients.
  */
 function deletePatientRecord(payload) {
   const ss = getSpreadsheet();
@@ -303,7 +354,7 @@ function deletePatientRecord(payload) {
   }
 
   sheet.deleteRow(targetRow);
-  return { success: true, message: 'Patient record removed from the clinical registry.' };
+  return { success: true, message: 'Treatment schedule record removed from clinical registry.' };
 }
 
 // ==========================================
@@ -420,7 +471,6 @@ function cleanupSpreadsheetTabs() {
   if (masterSheet && masterSheet.getLastColumn() > 0) {
     const lastCol = masterSheet.getLastColumn();
     const headers = masterSheet.getRange(1, 1, 1, lastCol).getValues()[0];
-    // Iterate backwards so deleting columns doesn't alter remaining target indices
     for (let c = headers.length - 1; c >= 0; c--) {
       const h = String(headers[c] || '').toUpperCase().trim();
       if (h.includes('HOSPITAL')) {

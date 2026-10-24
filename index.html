@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Amang Rodriguez Memorial Medical Center - ACTU</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <style>
     :root {
       --bg-base: #0f172a;
@@ -16,11 +19,11 @@
       --bg-subtle: #334155;
       --border-color: #334155;
       --border-focus: #38bdf8;
-      
+
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
-      
+
       --brand-primary: #0ea5e9;
       --brand-primary-hover: #0284c7;
       --brand-emerald: #10b981;
@@ -28,9 +31,10 @@
       --brand-purple: #8b5cf6;
       --brand-purple-subtle: rgba(139, 92, 246, 0.15);
       --brand-amber: #f59e0b;
+      --brand-amber-subtle: rgba(245, 158, 11, 0.15);
       --brand-rose: #f43f5e;
       --brand-rose-subtle: rgba(244, 63, 94, 0.15);
-      
+
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
@@ -49,13 +53,14 @@
       --bg-subtle: #f1f5f9;
       --border-color: #e2e8f0;
       --border-focus: #0284c7;
-      
+
       --text-main: #0f172a;
       --text-muted: #64748b;
       --text-dim: #94a3b8;
-      
+
       --brand-emerald-subtle: #d1fae5;
       --brand-purple-subtle: #ede9fe;
+      --brand-amber-subtle: #fef3c7;
       --brand-rose-subtle: #ffe4e6;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
@@ -89,7 +94,7 @@
     }
 
     .nav-container {
-      max-width: 1500px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: 14px 24px;
       display: flex;
@@ -142,25 +147,25 @@
 
     .search-box {
       position: relative;
-      width: 320px;
+      width: 380px;
     }
 
     .search-box input {
       width: 100%;
       background: var(--bg-subtle);
       border: 1px solid var(--border-color);
-      padding: 9px 14px 9px 38px;
-      border-radius: var(--radius-full);
       color: var(--text-main);
-      font-size: 13.5px;
-      transition: var(--transition);
+      padding: 9px 38px 9px 36px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
       outline: none;
+      transition: var(--transition);
     }
 
     .search-box input:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-      width: 360px;
+      border-color: var(--border-focus);
+      background: var(--bg-surface);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
     }
 
     .search-icon {
@@ -168,10 +173,10 @@
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-dim);
-      pointer-events: none;
+      color: var(--text-muted);
       width: 16px;
       height: 16px;
+      pointer-events: none;
     }
 
     .kbd-shortcut {
@@ -179,58 +184,52 @@
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
       font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
       padding: 2px 6px;
       border-radius: 4px;
-      background: var(--bg-surface);
-      color: var(--text-dim);
-      border: 1px solid var(--border-color);
+      pointer-events: none;
     }
 
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
-      padding: 9px 16px;
+      padding: 9px 18px;
       border-radius: var(--radius-md);
       font-size: 13.5px;
       font-weight: 600;
-      cursor: pointer;
       border: none;
+      cursor: pointer;
       transition: var(--transition);
       text-decoration: none;
       white-space: nowrap;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--brand-primary) 0%, #0284c7 100%);
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
     }
 
     .btn-primary:hover {
-      opacity: 0.95;
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.45);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.45);
     }
 
     .btn-emerald {
-      background: linear-gradient(135deg, var(--brand-emerald) 0%, #059669 100%);
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 
-    .btn-danger {
-      background: linear-gradient(135deg, var(--brand-rose) 0%, #e11d48 100%);
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.35);
-    }
-
-    .btn-danger:hover {
-      opacity: 0.95;
+    .btn-emerald:hover {
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.45);
     }
 
     .btn-secondary {
@@ -243,28 +242,44 @@
       background: var(--border-color);
     }
 
+    .btn-danger {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+    }
+
     .btn-icon {
-      padding: 9px;
-      border-radius: var(--radius-md);
       background: var(--bg-subtle);
-      color: var(--text-main);
       border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-icon:hover {
+      background: var(--border-color);
+      transform: translateY(-1px);
     }
 
     /* Main Container */
     main {
-      max-width: 1500px;
+      max-width: 1600px;
       width: 100%;
       margin: 0 auto;
       padding: 24px;
       flex: 1;
     }
 
-    /* Stats Banner */
+    /* Stats Bar */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -273,16 +288,22 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 18px 22px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
       gap: 16px;
       box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .stat-icon-wrapper {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -293,40 +314,38 @@
     .stat-info .stat-value {
       font-size: 26px;
       font-weight: 800;
-      line-height: 1.1;
       color: var(--text-main);
+      line-height: 1;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .stat-info .stat-label {
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 12.5px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 5px;
+      font-weight: 500;
     }
 
-    /* Section Bar */
+    /* Section Header */
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
+      gap: 10px;
     }
 
     .badge-unit {
       background: rgba(14, 165, 233, 0.15);
       color: var(--brand-primary);
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 700;
@@ -334,13 +353,12 @@
       letter-spacing: 0.05em;
     }
 
-    /* Table */
+    /* Patients Table */
     .table-container {
       background: var(--bg-surface);
-      border-radius: var(--radius-lg);
       border: 1px solid var(--border-color);
-      overflow: hidden;
-      margin-bottom: 32px;
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
       box-shadow: var(--shadow-sm);
     }
 
@@ -348,48 +366,56 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
+      font-size: 13.5px;
+    }
+
+    .patient-table thead {
+      background: var(--bg-subtle);
+      border-bottom: 2px solid var(--border-color);
     }
 
     .patient-table th {
-      background: var(--bg-subtle);
-      color: var(--text-muted);
+      padding: 13px 16px;
       font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 13px 18px;
-      border-bottom: 1px solid var(--border-color);
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
 
     .patient-table td {
-      padding: 13px 18px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--border-color);
-      font-size: 13.5px;
       vertical-align: middle;
+    }
+
+    .patient-table tbody tr {
       transition: background 0.15s ease;
     }
 
-    .patient-table tbody tr:hover td {
+    .patient-table tbody tr:hover {
       background: rgba(14, 165, 233, 0.04);
+    }
+
+    .patient-name-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .patient-avatar {
       width: 32px;
       height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-purple) 100%);
-      color: #fff;
-      font-weight: 700;
-      font-size: 13px;
-      display: inline-flex;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 10px;
-    }
-
-    .patient-name-wrapper {
-      display: inline-flex;
-      align-items: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: #fff;
+      flex-shrink: 0;
     }
 
     .patient-name-text {
@@ -398,6 +424,7 @@
       font-size: 14px;
     }
 
+    /* Pills & Badges */
     .diagnosis-pill {
       display: inline-block;
       font-size: 11.5px;
@@ -409,12 +436,28 @@
       border: 1px solid rgba(16, 185, 129, 0.25);
     }
 
+    .schedule-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.35);
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+
     .protocol-tag {
       font-weight: 600;
       color: var(--brand-primary);
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 13px;
     }
 
     .brand-pill {
@@ -438,22 +481,51 @@
       background: rgba(139, 92, 246, 0.15);
       color: var(--brand-purple);
       border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .visit-date-badge {
-      font-family: 'JetBrains Mono', monospace;
+    .qty-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
       font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .lot-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
       color: var(--text-muted);
       background: var(--bg-subtle);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
       border: 1px solid var(--border-color);
-      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .expiry-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      padding: 2px 7px;
+      border-radius: 4px;
     }
 
     .action-group {
@@ -480,8 +552,13 @@
       color: var(--text-main);
     }
 
-    .btn-action.edit:hover { color: var(--brand-primary); }
-    .btn-action.delete:hover { color: var(--brand-rose); }
+    .btn-action.edit:hover {
+      color: var(--brand-primary);
+    }
+
+    .btn-action.delete:hover {
+      color: var(--brand-rose);
+    }
 
     /* Modal */
     .modal-overlay {
@@ -496,22 +573,34 @@
       padding: 20px;
     }
 
-    .modal-overlay.active { display: flex; }
+    .modal-overlay.active {
+      display: flex;
+    }
 
     .modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 620px;
+      max-width: 720px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: var(--shadow-lg);
-      overflow: hidden;
       animation: modalSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
     }
 
     @keyframes modalSlideIn {
-      from { transform: translateY(20px) scale(0.97); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-header {
@@ -520,104 +609,226 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--bg-surface);
     }
 
     .modal-header h2 {
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 800;
       color: var(--text-main);
     }
 
     .modal-close {
       background: transparent;
       border: none;
-      font-size: 20px;
+      font-size: 24px;
       color: var(--text-muted);
       cursor: pointer;
+      line-height: 1;
       padding: 4px;
+    }
+
+    .modal-close:hover {
+      color: var(--text-main);
     }
 
     .modal-body {
       padding: 24px;
-      max-height: 75vh;
       overflow-y: auto;
+      flex: 1;
     }
 
+    /* Form Layout */
     .form-group {
       margin-bottom: 18px;
       position: relative;
     }
 
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
     .form-label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
       margin-bottom: 6px;
     }
 
-    .form-label span.req { color: var(--brand-rose); }
+    .form-label .req {
+      color: var(--brand-rose);
+      margin-left: 2px;
+    }
 
-    .form-input, .form-select {
+    .form-input,
+    .form-select {
       width: 100%;
       background: var(--bg-subtle);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 11px 14px;
+      padding: 10px 14px;
       border-radius: var(--radius-md);
-      font-size: 14px;
+      font-size: 13.5px;
       outline: none;
       transition: var(--transition);
     }
 
-    .form-input:focus, .form-select:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--border-focus);
+      background: var(--bg-surface);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
     }
 
-    /* Searchable Medicine Dropdown (Unique, No Codes) */
+    /* Patient Schedule Timeline Selector inside Modal */
+    .schedule-selector-banner {
+      background: rgba(14, 165, 233, 0.08);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .schedule-selector-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .schedule-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .schedule-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .schedule-chip:hover {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    .schedule-chip.active {
+      background: #0ea5e9;
+      border-color: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-new-schedule-chip {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px dashed rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-new-schedule-chip:hover {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    /* Autocomplete List */
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 60;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .autocomplete-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.1s;
+    }
+
+    .autocomplete-item:hover {
+      background: var(--bg-subtle);
+    }
+
+    /* Custom Searchable Select */
     .custom-select-container {
       position: relative;
-      width: 100%;
     }
 
     .custom-select-trigger {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 10px 14px;
       background: var(--bg-subtle);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 11px 14px;
       cursor: pointer;
-      min-height: 46px;
-      transition: var(--transition);
+      font-size: 13.5px;
+      color: var(--text-main);
       user-select: none;
+      transition: var(--transition);
     }
 
     .custom-select-trigger:hover {
-      border-color: var(--brand-primary);
+      border-color: var(--text-dim);
     }
 
     .custom-select-trigger.active {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
-    }
-
-    .selected-med-display {
-      font-weight: 600;
-      font-size: 13.5px;
-      color: var(--text-main);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      padding-right: 8px;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
     }
 
     .placeholder-text {
-      color: var(--text-dim);
-      font-weight: 400;
-      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .selected-med-display {
+      font-weight: 700;
+      color: var(--brand-primary);
     }
 
     .trigger-icons {
@@ -630,20 +841,18 @@
       background: transparent;
       border: none;
       color: var(--text-dim);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 2px 4px;
-      border-radius: 4px;
+      font-size: 18px;
       line-height: 1;
+      cursor: pointer;
+      padding: 0 2px;
     }
 
     .btn-clear-select:hover {
       color: var(--brand-rose);
-      background: var(--border-color);
     }
 
     .chevron-icon {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
       transition: transform 0.2s;
     }
@@ -654,26 +863,27 @@
 
     .custom-select-panel {
       position: absolute;
-      top: calc(100% + 6px);
+      top: 100%;
       left: 0;
       right: 0;
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
-      z-index: 70;
+      box-shadow: var(--shadow-lg);
+      margin-top: 4px;
+      z-index: 60;
       display: none;
-      flex-direction: column;
       overflow: hidden;
-      animation: modalSlideIn 0.18s ease;
     }
 
-    .custom-select-panel.open { display: flex; }
+    .custom-select-panel.open {
+      display: block;
+    }
 
     .dropdown-search-wrapper {
-      padding: 10px 12px;
+      padding: 8px;
       border-bottom: 1px solid var(--border-color);
-      background: var(--bg-card);
+      background: var(--bg-surface);
     }
 
     .dropdown-search-input {
@@ -692,7 +902,7 @@
     }
 
     .custom-select-options {
-      max-height: 240px;
+      max-height: 220px;
       overflow-y: auto;
       padding: 4px 0;
     }
@@ -751,33 +961,6 @@
       color: #ffffff;
     }
 
-    .autocomplete-list {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 60;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .autocomplete-item {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .autocomplete-item:hover { background: var(--bg-subtle); }
-
     .modal-footer {
       padding: 16px 24px;
       background: var(--bg-subtle);
@@ -788,12 +971,98 @@
       gap: 12px;
     }
 
+    /* Dialog */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dialog-overlay.active {
+      display: flex;
+    }
+
+    .dialog-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+
+    .dialog-icon-wrapper {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .dialog-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .dialog-message {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(14, 165, 233, 0.2);
+      border-top-color: var(--brand-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     /* Toast */
     .toast-container {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      z-index: 70;
+      z-index: 90;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -812,121 +1081,47 @@
       animation: toastIn 0.3s ease;
     }
 
+    .toast-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .toast-error {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    }
+
+    .toast-info {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    }
+
     @keyframes toastIn {
-      from { transform: translateX(50px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from {
+        transform: translateX(50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
-    .toast-success { background: #059669; }
-    .toast-error { background: #e11d48; }
-    .toast-info { background: #0284c7; }
+    @media (max-width: 860px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
 
-    /* Clinical In-App Dialog (Zero browser popup URLs) */
-    .dialog-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.78);
-      backdrop-filter: blur(8px);
-      z-index: 120;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+      .search-box {
+        width: 100%;
+      }
 
-    .dialog-overlay.active {
-      display: flex;
-    }
-
-    .dialog-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-      padding: 28px 24px 22px 24px;
-      text-align: center;
-      animation: modalSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .dialog-icon-wrapper {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      margin: 0 auto 16px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-color);
-    }
-
-    .dialog-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 8px;
-      letter-spacing: -0.01em;
-    }
-
-    .dialog-message {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .dialog-message strong {
-      color: var(--text-main);
-    }
-
-    .dialog-actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .dialog-actions .btn {
-      min-width: 120px;
-    }
-
-    /* Loading Spinner */
-    .loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .loading-overlay.active { display: flex; }
-
-    .spinner {
-      width: 44px;
-      height: 44px;
-      border: 4px solid rgba(14, 165, 233, 0.2);
-      border-top-color: var(--brand-primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 900px) {
-      .nav-container { flex-direction: column; align-items: stretch; }
-      .search-box { width: 100%; }
-      .search-box input:focus { width: 100%; }
+      .nav-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
+
 <body data-theme="dark">
 
   <!-- Loading Overlay -->
@@ -949,31 +1144,47 @@
       <div class="nav-actions">
         <!-- Global Search -->
         <div class="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="globalSearch" placeholder="Search patient, diagnosis, medicine, dosage..." autocomplete="off">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" id="globalSearch" placeholder="Search patient, diagnosis, medicine, schedule..."
+            autocomplete="off">
           <span class="kbd-shortcut">/</span>
         </div>
 
         <!-- Add Patient Button -->
         <button class="btn btn-primary" id="btnAddPatient">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-          Add Patient
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Register Treatment
         </button>
 
         <!-- Medicine Repository Browser Button -->
         <button class="btn btn-emerald" id="btnBrowseMeds" title="Browse Hospital Medicine Formulary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 20.5 3 13a4.95 4.95 0 1 1 7-7l7.5 7.5a4.95 4.95 0 0 1-7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.5 20.5 3 13a4.95 4.95 0 1 1 7-7l7.5 7.5a4.95 4.95 0 0 1-7 7Z" />
+            <path d="m8.5 8.5 7 7" />
+          </svg>
           Meds Repository
         </button>
 
         <!-- Sheet Cleanup Action -->
-        <button class="btn btn-secondary" id="btnCleanupTabs" title="Clean extraneous tabs (keep Master_Patients and Medicine only)" style="padding: 9px 12px; font-size: 12px;">
+        <button class="btn btn-secondary" id="btnCleanupTabs"
+          title="Clean extraneous tabs (keep Master_Patients and Medicine only)"
+          style="padding: 9px 12px; font-size: 12px;">
           🧹 Clean Tabs
         </button>
 
         <!-- Theme Toggle -->
         <button class="btn-icon" id="btnThemeToggle" title="Toggle Light/Dark Theme">
-          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
         </button>
       </div>
     </div>
@@ -989,7 +1200,17 @@
         </div>
         <div class="stat-info">
           <div class="stat-value" id="statPatientCount">0</div>
-          <div class="stat-label">Registered Cancer Patients (Master_Patients)</div>
+          <div class="stat-label">Unique Patients Registered</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--brand-purple-subtle); color: var(--brand-purple);">
+          📅
+        </div>
+        <div class="stat-info">
+          <div class="stat-value" id="statSessionCount">0</div>
+          <div class="stat-label">Total Chemo Therapy Sessions Scheduled</div>
         </div>
       </div>
 
@@ -999,17 +1220,7 @@
         </div>
         <div class="stat-info">
           <div class="stat-value" id="statMedCount">0</div>
-          <div class="stat-label">Unique Formulary Medicines in Repository</div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon-wrapper" style="background: var(--brand-purple-subtle); color: var(--brand-purple);">
-          📅
-        </div>
-        <div class="stat-info">
-          <div class="stat-value" id="statVisitCount">0</div>
-          <div class="stat-label">Active Treatment Visits Recorded</div>
+          <div class="stat-label">Formulary Medicines in Repository</div>
         </div>
       </div>
     </div>
@@ -1017,26 +1228,31 @@
     <!-- Patient Treatment Registry Section -->
     <div class="section-header">
       <div class="section-title">
-        <span class="badge-unit">Patient Treatment Registry</span>
-        <span style="font-size: 14px; color: var(--text-muted); font-weight: 500;">Directly connected to Master_Patients Database</span>
+        <span class="badge-unit">Clinical Treatment Registry</span>
+        <span style="font-size: 14px; color: var(--text-muted); font-weight: 500;">
+          Directly connected to Master_Patients Database
+        </span>
       </div>
       <button class="btn btn-primary" onclick="openPatientModal()">
         + Register Patient Treatment
       </button>
     </div>
 
+    <!-- Master Treatment Registry Table -->
     <div class="table-container">
       <table class="patient-table" id="patientsTable">
         <thead>
           <tr>
-            <th style="width: 50px;">#</th>
+            <th style="width: 45px;">#</th>
             <th>Patient Name</th>
-            <th style="width: 170px;">Diagnosis / Cancer Site</th>
-            <th>Chemo Protocol (Medicine)</th>
-            <th style="width: 150px;">Brand Name</th>
-            <th style="width: 160px;">Dosage / Qty</th>
-            <th style="width: 130px;">Last Visit Date</th>
-            <th style="width: 90px; text-align: right;">Actions</th>
+            <th style="width: 150px;">Diagnosis</th>
+            <th style="width: 140px;">Therapy Schedule</th>
+            <th>Chemo Protocol</th>
+            <th style="width: 130px;">Brand Name</th>
+            <th style="width: 120px;">Dosage</th>
+            <th style="width: 110px;">Quantity</th>
+            <th style="width: 160px;">Lot # / Expiry</th>
+            <th style="width: 80px; text-align: right;">Actions</th>
           </tr>
         </thead>
         <tbody id="patientsTableBody">
@@ -1050,7 +1266,7 @@
   <!-- MODALS -->
   <!-- ========================================== -->
 
-  <!-- 1. Patient Add / Edit Modal -->
+  <!-- 1. Patient Add / Edit / Schedule Modal -->
   <div class="modal-overlay" id="patientModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -1060,48 +1276,73 @@
       <div class="modal-body">
         <form id="patientForm" onsubmit="handlePatientSubmit(event)">
           <input type="hidden" id="formRowIndex" value="">
+          <input type="hidden" id="formIsNewSchedule" value="false">
 
-          <!-- Patient Name (Primary Focus with Autocomplete) -->
+          <!-- Patient Name (Searchable with Autocomplete) -->
           <div class="form-group">
             <label class="form-label">Patient Name <span class="req">*</span></label>
-            <input type="text" id="formPatientName" class="form-input" placeholder="SURNAME, FIRST NAME MIDDLE" required autocomplete="off" oninput="handlePatientNameInput(this.value)">
+            <input type="text" id="formPatientName" class="form-input" placeholder="SURNAME, FIRST NAME MIDDLE" required
+              autocomplete="off" oninput="handlePatientNameInput(this.value)">
             <div id="patientSuggestions" class="autocomplete-list"></div>
             <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
-              Type patient name. Existing patients will suggest and auto-fill previous diagnosis, protocol, and dosage.
+              Type patient name to search. Returning patients will suggest and display their Chemo Therapy Schedule dates.
             </small>
           </div>
 
-          <!-- Diagnosis -->
-          <div class="form-group">
-            <label class="form-label">Diagnosis / Cancer Site</label>
-            <input type="text" id="formDiagnosis" class="form-input" placeholder="e.g. BREAST, MDS, NPCA, COLON" list="diagnosisList">
-            <datalist id="diagnosisList">
-              <option value="BREAST">
-              <option value="MDS">
-              <option value="MULTIPLE MYELOMA">
-              <option value="COLON">
-              <option value="COLORECTAL">
-              <option value="RECTAL">
-              <option value="NPCA">
-              <option value="NASOPHARYNGEAL">
-              <option value="LUNG">
-              <option value="OVARIAN">
-              <option value="RENAL CELL">
-              <option value="UROTHELIAL">
-              <option value="HODGKINS LYMPHOMA">
-              <option value="THYROID CA">
-            </datalist>
+          <!-- Existing Patient Schedule Selector (Pop-up Timeline) -->
+          <div class="schedule-selector-banner" id="scheduleSelectorBanner">
+            <div class="schedule-selector-title">
+              <span>📅 Recorded Chemo Therapy Schedules</span>
+              <span id="scheduleCountBadge" style="color: var(--text-muted); font-size: 11px;"></span>
+            </div>
+            <div class="schedule-chips-container" id="scheduleChipsContainer">
+              <!-- Dynamically populated chips -->
+            </div>
+          </div>
+
+          <!-- Diagnosis & Chemo Therapy Schedule (Row) -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Diagnosis / Cancer Site</label>
+              <input type="text" id="formDiagnosis" class="form-input" placeholder="e.g. BREAST, MDS, MULTIPLE MYELOMA"
+                list="diagnosisList">
+              <datalist id="diagnosisList">
+                <option value="BREAST">
+                <option value="MDS">
+                <option value="MULTIPLE MYELOMA">
+                <option value="COLON">
+                <option value="COLORECTAL">
+                <option value="RECTAL">
+                <option value="NPCA">
+                <option value="NASOPHARYNGEAL">
+                <option value="LUNG">
+                <option value="OVARIAN">
+                <option value="RENAL CELL">
+                <option value="UROTHELIAL">
+                <option value="HODGKINS LYMPHOMA">
+                <option value="THYROID CA">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Chemo Therapy Schedule (Date) <span class="req">*</span></label>
+              <input type="date" id="formScheduleDate" class="form-input" required>
+              <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+                Chemotherapy session date for this entry.
+              </small>
+            </div>
           </div>
 
           <!-- Chemo Protocol (Unique Medicine Dropdown with On-The-Fly Add) -->
           <div class="form-group" id="protocolGroup">
             <label class="form-label">Chemo Protocol / Medicine <span class="req">*</span></label>
-            
+
             <div class="custom-select-container" id="medDropdownContainer">
               <div class="custom-select-trigger" id="medDropdownTrigger" onclick="toggleMedDropdown()">
                 <span id="selectedMedText" class="placeholder-text">Select Medicine from Repository...</span>
                 <div class="trigger-icons">
-                  <button type="button" class="btn-clear-select" id="btnClearMed" onclick="clearMedSelection(event)" title="Clear selection" style="display: none;">&times;</button>
+                  <button type="button" class="btn-clear-select" id="btnClearMed" onclick="clearMedSelection(event)"
+                    title="Clear selection" style="display: none;">&times;</button>
                   <span class="chevron-icon">▼</span>
                 </div>
               </div>
@@ -1109,14 +1350,17 @@
               <!-- Searchable Panel -->
               <div class="custom-select-panel" id="medDropdownPanel">
                 <div class="dropdown-search-wrapper">
-                  <input type="text" id="medSearchInput" class="dropdown-search-input" placeholder="Type to search unique medicines..." autocomplete="off" oninput="filterMedDropdown(this.value)">
+                  <input type="text" id="medSearchInput" class="dropdown-search-input"
+                    placeholder="Type to search unique medicines..." autocomplete="off"
+                    oninput="filterMedDropdown(this.value)">
                 </div>
                 <div class="custom-select-options" id="medOptionsList">
                   <!-- Populated dynamically with unique medicines only -->
                 </div>
                 <div class="custom-select-footer">
                   <span id="medCountFooter">0 unique medicines</span>
-                  <button type="button" class="btn-secondary" style="padding: 3px 8px; font-size: 11px;" onclick="enableCustomProtocol()">+ Free Text</button>
+                  <button type="button" class="btn-secondary" style="padding: 3px 8px; font-size: 11px;"
+                    onclick="enableCustomProtocol()">+ Free Text</button>
                 </div>
               </div>
 
@@ -1126,45 +1370,75 @@
 
             <!-- Free text fallback input -->
             <div id="customProtocolWrapper" style="display: none; margin-top: 8px;">
-              <input type="text" id="customProtocolInput" class="form-input" placeholder="Custom regimen (e.g. PACLI+CARBO+ZOLE(C7))..." oninput="syncCustomProtocol(this.value)">
-              <small style="color: var(--brand-primary); font-size: 11px; cursor: pointer; margin-top: 4px; display: inline-block;" onclick="disableCustomProtocol()">
+              <input type="text" id="customProtocolInput" class="form-input"
+                placeholder="Custom regimen (e.g. PACLI+CARBO+ZOLE(C7))..." oninput="syncCustomProtocol(this.value)">
+              <small
+                style="color: var(--brand-primary); font-size: 11px; cursor: pointer; margin-top: 4px; display: inline-block;"
+                onclick="disableCustomProtocol()">
                 &larr; Back to medicine dropdown
               </small>
             </div>
-
-            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
-              Select from the deduplicated hospital repository, or type a new medicine to add it to the database.
-            </small>
           </div>
 
-          <!-- Brand Name Field (Required) -->
+          <!-- Brand Name -->
           <div class="form-group" id="brandGroup">
             <label class="form-label">Brand Name <span class="req">*</span></label>
-            <input type="text" id="formBrand" class="form-input" placeholder="e.g. Herceptin, Velcade, Taxol, Keytruda, Vidaza" required>
+            <input type="text" id="formBrand" class="form-input"
+              placeholder="e.g. Herceptin, Velcade, Taxol, Keytruda, Vidaza" required>
             <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
               Prescribed or dispensed commercial/innovator brand name (Required).
             </small>
           </div>
 
-          <!-- Dosage Field -->
-          <div class="form-group">
-            <label class="form-label">Dosage / Quantity Required <span class="req">*</span></label>
-            <input type="text" id="formDosage" class="form-input" placeholder="e.g. 1 vial, 250mg, 500ml IV, 2 tabs, Cycle 2 Day 1" required>
-            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
-              Specifies how many doses or units are needed for dispensing / pharmacy prep.
-            </small>
+          <!-- Lot Number & Expiry Date (Row) -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Lot Number</label>
+              <input type="text" id="formLotNumber" class="form-input" placeholder="e.g. LOT-89210-B">
+              <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+                Manufacturer batch / lot number.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="date" id="formExpiryDate" class="form-input">
+              <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+                Medication expiration date.
+              </small>
+            </div>
+          </div>
+
+          <!-- Dosage & Quantity Required (Separated Row) -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Dosage <span class="req">*</span></label>
+              <input type="text" id="formDosage" class="form-input" placeholder="e.g. 440mg, 1.3mg/m², 1000ml IV"
+                required>
+              <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+                Clinical dosage prescribed for patient.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Quantity Required <span class="req">*</span></label>
+              <input type="text" id="formQuantity" class="form-input" placeholder="e.g. 2 Vials, 1 Box, 3 Tabs" required>
+              <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+                Physical units needed for dispensing / pharmacy prep.
+              </small>
+            </div>
           </div>
 
           <div class="modal-footer" style="margin: 20px -24px -24px -24px;">
             <button type="button" class="btn btn-secondary" onclick="closePatientModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="btnSavePatient">Save Patient</button>
+            <button type="submit" class="btn btn-primary" id="btnSavePatient">Save Treatment Schedule</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- 2. Medicine Repository Browser Modal (With Add New Medicine Option) -->
+  <!-- 2. Medicine Repository Browser Modal -->
   <div class="modal-overlay" id="medsModal">
     <div class="modal-card" style="max-width: 820px;">
       <div class="modal-header">
@@ -1174,21 +1448,28 @@
       <div class="modal-body" style="padding: 18px;">
         <div style="display: flex; gap: 12px; margin-bottom: 16px;">
           <div class="search-box" style="flex: 1;">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="medRepositorySearch" placeholder="Filter medicines..." oninput="renderMedicineRepository(this.value)">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input type="text" id="medRepositorySearch" placeholder="Filter medicines..."
+              oninput="renderMedicineRepository(this.value)">
           </div>
           <button class="btn btn-emerald" onclick="promptAddNewMedicine()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
             Add New Medicine
           </button>
         </div>
 
-        <div style="max-height: 480px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+        <div
+          style="max-height: 480px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
           <table class="patient-table">
             <thead>
               <tr>
                 <th style="width: 50px;">#</th>
-                <th>Medicine Description (Unique)</th>
+                <th>Medicine Description (Unique Formulary)</th>
                 <th style="width: 120px; text-align: right;">Action</th>
               </tr>
             </thead>
@@ -1202,7 +1483,7 @@
     </div>
   </div>
 
-  <!-- 3. Clinical In-App Dialog (Replaces native browser confirm/prompt/alert) -->
+  <!-- 3. Clinical In-App Dialog -->
   <div class="dialog-overlay" id="clinicalDialogOverlay">
     <div class="dialog-card">
       <div class="dialog-icon-wrapper" id="dialogIcon">⚠️</div>
@@ -1226,8 +1507,8 @@
   <!-- ========================================== -->
   <script>
     const state = {
-      patients: [],
-      medicines: [], // Unique medicine name strings only (no DMR codes)
+      patients: [], // Array of patient treatment schedule records
+      medicines: [], // Unique medicine name strings only
       filterQuery: '',
       currentSearchMedQuery: ''
     };
@@ -1235,13 +1516,16 @@
     const elements = {
       patientsTableBody: document.getElementById('patientsTableBody'),
       statPatientCount: document.getElementById('statPatientCount'),
+      statSessionCount: document.getElementById('statSessionCount'),
       statMedCount: document.getElementById('statMedCount'),
-      statVisitCount: document.getElementById('statVisitCount'),
       loadingOverlay: document.getElementById('loadingOverlay'),
       loadingText: document.getElementById('loadingText'),
       patientModal: document.getElementById('patientModal'),
       medsModal: document.getElementById('medsModal'),
       patientSuggestions: document.getElementById('patientSuggestions'),
+      scheduleSelectorBanner: document.getElementById('scheduleSelectorBanner'),
+      scheduleChipsContainer: document.getElementById('scheduleChipsContainer'),
+      scheduleCountBadge: document.getElementById('scheduleCountBadge'),
       medDropdownContainer: document.getElementById('medDropdownContainer'),
       medDropdownTrigger: document.getElementById('medDropdownTrigger'),
       medDropdownPanel: document.getElementById('medDropdownPanel'),
@@ -1278,8 +1562,6 @@
       document.getElementById('btnAddPatient').addEventListener('click', () => openPatientModal());
       document.getElementById('btnBrowseMeds').addEventListener('click', openMedsModal);
       document.getElementById('btnThemeToggle').addEventListener('click', toggleTheme);
-
-      // Clean tabs action
       document.getElementById('btnCleanupTabs').addEventListener('click', handleCleanupTabs);
 
       // Close dropdowns on outside click
@@ -1290,7 +1572,7 @@
     }
 
     function loadInitialData() {
-      showLoading('Loading ARMMC Patient Records...');
+      showLoading('Loading ARMMC Treatment Records...');
 
       if (typeof google === 'undefined' || !google.script || !google.script.run) {
         console.warn('Running in standalone preview mode (mock data will be used).');
@@ -1316,14 +1598,15 @@
     }
 
     function updateStats() {
-      elements.statPatientCount.textContent = state.patients.length;
+      const uniqueNames = new Set(state.patients.map(p => (p.name || '').trim().toLowerCase()).filter(Boolean));
+      elements.statPatientCount.textContent = uniqueNames.size;
+      elements.statSessionCount.textContent = state.patients.length;
       elements.statMedCount.textContent = state.medicines.length;
-      elements.statVisitCount.textContent = state.patients.filter(p => p.lastVisit).length;
       elements.medCountFooter.textContent = `${state.medicines.length} unique medicines`;
     }
 
     // ==========================================
-    // RENDER PATIENT TABLE
+    // RENDER PATIENT TABLE (MULTI-SCHEDULE)
     // ==========================================
 
     function renderPatientsTable() {
@@ -1331,21 +1614,24 @@
       const q = state.filterQuery;
 
       const filtered = q
-        ? state.patients.filter(p => 
-            (p.name && p.name.toLowerCase().includes(q)) ||
-            (p.diagnosis && p.diagnosis.toLowerCase().includes(q)) ||
-            (p.protocol && p.protocol.toLowerCase().includes(q)) ||
-            (p.brand && p.brand.toLowerCase().includes(q)) ||
-            (p.dosage && p.dosage.toLowerCase().includes(q)) ||
-            (p.lastVisit && p.lastVisit.toLowerCase().includes(q))
-          )
+        ? state.patients.filter(p =>
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.diagnosis && p.diagnosis.toLowerCase().includes(q)) ||
+          (p.scheduleDate && p.scheduleDate.toLowerCase().includes(q)) ||
+          (p.protocol && p.protocol.toLowerCase().includes(q)) ||
+          (p.brand && p.brand.toLowerCase().includes(q)) ||
+          (p.lotNumber && p.lotNumber.toLowerCase().includes(q)) ||
+          (p.expiryDate && p.expiryDate.toLowerCase().includes(q)) ||
+          (p.dosage && p.dosage.toLowerCase().includes(q)) ||
+          (p.quantity && p.quantity.toLowerCase().includes(q))
+        )
         : state.patients;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-dim);">
-              ${q ? `No patients matching "<strong>${escapeHtml(q)}</strong>"` : 'No patients registered in Master_Patients yet. Click "+ Register Patient Treatment" to start.'}
+            <td colspan="10" style="text-align: center; padding: 40px; color: var(--text-dim);">
+              ${q ? `No treatment schedules matching "<strong>${escapeHtml(q)}</strong>"` : 'No therapy sessions recorded yet. Click "+ Register Treatment" to start.'}
             </td>
           </tr>
         `;
@@ -1359,7 +1645,7 @@
           <tr>
             <td style="color: var(--text-dim); font-size: 12px; font-family: 'JetBrains Mono', monospace;">${idx + 1}</td>
             <td>
-              <div class="patient-name-wrapper">
+              <div class="patient-name-wrapper" style="cursor: pointer;" onclick="openEditModal(${p.rowIndex})" title="Click to view all schedules for ${escapeQuotes(p.name)}">
                 <span class="patient-avatar">${initial}</span>
                 <span class="patient-name-text">${escapeHtml(p.name)}</span>
               </div>
@@ -1368,10 +1654,18 @@
               ${p.diagnosis ? `<span class="diagnosis-pill">${escapeHtml(p.diagnosis)}</span>` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
             <td>
+              ${p.scheduleDate ? `
+                <span class="schedule-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  ${escapeHtml(p.scheduleDate)}
+                </span>
+              ` : '<span style="color: var(--text-dim);">--</span>'}
+            </td>
+            <td>
               ${p.protocol ? `
                 <div class="protocol-tag">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.5 20.5 3 13a4.95 4.95 0 1 1 7-7l7.5 7.5a4.95 4.95 0 0 1-7 7Z"/></svg>
-                  ${escapeHtml(p.protocol)}
+                  <span>${escapeHtml(p.protocol)}</span>
                 </div>
               ` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
@@ -1382,14 +1676,21 @@
               ${p.dosage ? `<span class="dosage-pill">${escapeHtml(p.dosage)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
             </td>
             <td>
-              ${p.lastVisit ? `<span class="visit-date-badge">${escapeHtml(p.lastVisit)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
+              ${p.quantity ? `<span class="qty-pill">${escapeHtml(p.quantity)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                ${p.lotNumber ? `<span class="lot-badge">Lot: ${escapeHtml(p.lotNumber)}</span>` : ''}
+                ${p.expiryDate ? `<span class="expiry-badge">Exp: ${escapeHtml(p.expiryDate)}</span>` : ''}
+                ${!p.lotNumber && !p.expiryDate ? '<span style="color: var(--text-dim); font-size: 11px;">--</span>' : ''}
+              </div>
             </td>
             <td style="text-align: right;">
               <div class="action-group" style="justify-content: flex-end;">
-                <button class="btn-action edit" title="Edit Patient" onclick="openEditModal(${p.rowIndex})">
+                <button class="btn-action edit" title="Edit Treatment Schedule" onclick="openEditModal(${p.rowIndex})">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                 </button>
-                <button class="btn-action delete" title="Delete Patient" onclick="confirmDeletePatient(${p.rowIndex})">
+                <button class="btn-action delete" title="Delete Schedule" onclick="confirmDeletePatient(${p.rowIndex})">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
               </div>
@@ -1397,6 +1698,319 @@
           </tr>
         `;
       }).join('');
+    }
+
+    // ==========================================
+    // PATIENT AUTOCOMPLETE & SCHEDULE POP-UP
+    // ==========================================
+
+    function handlePatientNameInput(val) {
+      const q = val.toLowerCase().trim();
+      if (!q || state.patients.length === 0) {
+        elements.patientSuggestions.style.display = 'none';
+        return;
+      }
+
+      // Group records by patient name
+      const grouped = {};
+      state.patients.forEach(p => {
+        if (!p.name) return;
+        const key = p.name.trim().toLowerCase();
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+      });
+
+      const matchedKeys = Object.keys(grouped).filter(k => k.includes(q)).slice(0, 6);
+      if (matchedKeys.length === 0) {
+        elements.patientSuggestions.style.display = 'none';
+        return;
+      }
+
+      elements.patientSuggestions.innerHTML = matchedKeys.map(k => {
+        const sessions = grouped[k];
+        const primary = sessions[0];
+        const dates = sessions.map(s => s.scheduleDate).filter(Boolean);
+        const latestDate = dates.length > 0 ? dates[0] : 'No schedule';
+
+        return `
+          <div class="autocomplete-item" onclick="selectPatientAndPopulateSchedules('${escapeQuotes(primary.name)}')">
+            <div>
+              <div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${escapeHtml(primary.name)}</div>
+              <small style="color: var(--text-dim); font-size: 11px;">
+                ${escapeHtml(primary.diagnosis || 'No Diagnosis')} &bull; ${escapeHtml(primary.brand || 'No Brand')} &bull; Latest: ${escapeHtml(latestDate)}
+              </small>
+            </div>
+            <span style="font-size: 11px; color: var(--brand-primary); font-family: 'JetBrains Mono', monospace; font-weight: 700;">
+              ${sessions.length} Schedule${sessions.length > 1 ? 's' : ''}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      elements.patientSuggestions.style.display = 'block';
+    }
+
+    function selectPatientAndPopulateSchedules(patientName) {
+      elements.patientSuggestions.style.display = 'none';
+      const sessions = state.patients.filter(p => p.name && p.name.trim().toLowerCase() === patientName.trim().toLowerCase());
+      if (sessions.length === 0) return;
+
+      // Render Schedule Selector Banner
+      renderScheduleSelectorBanner(sessions, sessions[0].rowIndex);
+
+      // Populate with the latest or first session
+      populateFormWithSession(sessions[0]);
+    }
+
+    function renderScheduleSelectorBanner(sessions, activeRowIndex) {
+      if (!sessions || sessions.length === 0) {
+        elements.scheduleSelectorBanner.style.display = 'none';
+        return;
+      }
+
+      elements.scheduleCountBadge.textContent = `${sessions.length} session${sessions.length > 1 ? 's' : ''} recorded`;
+
+      let chipsHtml = sessions.map(s => {
+        const isActive = s.rowIndex === activeRowIndex;
+        return `
+          <div class="schedule-chip ${isActive ? 'active' : ''}" onclick="selectSpecificSession(${s.rowIndex})">
+            <span>📅 ${escapeHtml(s.scheduleDate || 'No Date')}</span>
+          </div>
+        `;
+      }).join('');
+
+      // Add New Schedule Entry chip button
+      chipsHtml += `
+        <button type="button" class="btn-new-schedule-chip" onclick="prepareNewScheduleEntryForPatient('${escapeQuotes(sessions[0].name)}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+          + Add New Schedule Entry
+        </button>
+      `;
+
+      elements.scheduleChipsContainer.innerHTML = chipsHtml;
+      elements.scheduleSelectorBanner.style.display = 'block';
+    }
+
+    function selectSpecificSession(rowIndex) {
+      const item = state.patients.find(p => p.rowIndex === rowIndex);
+      if (!item) return;
+
+      const patientSessions = state.patients.filter(p => p.name && p.name.trim().toLowerCase() === item.name.trim().toLowerCase());
+      renderScheduleSelectorBanner(patientSessions, rowIndex);
+      populateFormWithSession(item);
+    }
+
+    function populateFormWithSession(item) {
+      document.getElementById('modalTitle').textContent = `Patient Treatment: ${item.name}`;
+      document.getElementById('formRowIndex').value = item.rowIndex || '';
+      document.getElementById('formIsNewSchedule').value = 'false';
+      document.getElementById('formPatientName').value = item.name || '';
+      document.getElementById('formDiagnosis').value = item.diagnosis || '';
+      document.getElementById('formScheduleDate').value = item.scheduleDate || new Date().toISOString().split('T')[0];
+      document.getElementById('formBrand').value = item.brand || '';
+      document.getElementById('formLotNumber').value = item.lotNumber || '';
+      document.getElementById('formExpiryDate').value = item.expiryDate || '';
+      document.getElementById('formDosage').value = item.dosage || '';
+      document.getElementById('formQuantity').value = item.quantity || '';
+
+      if (item.protocol) {
+        selectUniqueMedicine(item.protocol);
+      } else {
+        clearMedSelection();
+      }
+    }
+
+    function prepareNewScheduleEntryForPatient(patientName) {
+      const sessions = state.patients.filter(p => p.name && p.name.trim().toLowerCase() === patientName.trim().toLowerCase());
+      const base = sessions.length > 0 ? sessions[0] : null;
+
+      document.getElementById('modalTitle').textContent = `New Therapy Schedule for ${patientName}`;
+      document.getElementById('formRowIndex').value = '';
+      document.getElementById('formIsNewSchedule').value = 'true';
+
+      // Keep baseline diagnosis, brand, and medicine protocol
+      document.getElementById('formPatientName').value = patientName;
+      document.getElementById('formDiagnosis').value = base ? base.diagnosis : '';
+      document.getElementById('formBrand').value = base ? base.brand : '';
+
+      // Default new schedule date to today or next cycle
+      document.getElementById('formScheduleDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('formLotNumber').value = '';
+      document.getElementById('formExpiryDate').value = '';
+      document.getElementById('formDosage').value = base ? base.dosage : '';
+      document.getElementById('formQuantity').value = base ? base.quantity : '';
+
+      if (base && base.protocol) {
+        selectUniqueMedicine(base.protocol);
+      }
+
+      // Re-render chips showing "New Entry" mode
+      renderScheduleSelectorBanner(sessions, -1);
+      setTimeout(() => document.getElementById('formScheduleDate').focus(), 50);
+    }
+
+    // ==========================================
+    // PATIENT CRUD MODAL
+    // ==========================================
+
+    function openPatientModal() {
+      document.getElementById('modalTitle').textContent = 'Register Patient Treatment';
+      document.getElementById('patientForm').reset();
+      document.getElementById('formRowIndex').value = '';
+      document.getElementById('formIsNewSchedule').value = 'false';
+      document.getElementById('formScheduleDate').value = new Date().toISOString().split('T')[0];
+      clearMedSelection();
+      disableCustomProtocol();
+
+      elements.scheduleSelectorBanner.style.display = 'none';
+      elements.patientSuggestions.style.display = 'none';
+
+      elements.patientModal.classList.add('active');
+      setTimeout(() => document.getElementById('formPatientName').focus(), 60);
+    }
+
+    function openEditModal(rowIndex) {
+      const item = state.patients.find(p => p.rowIndex === rowIndex);
+      if (!item) return;
+
+      elements.patientModal.classList.add('active');
+
+      const sessions = state.patients.filter(p => p.name && p.name.trim().toLowerCase() === item.name.trim().toLowerCase());
+      renderScheduleSelectorBanner(sessions, rowIndex);
+      populateFormWithSession(item);
+    }
+
+    function closePatientModal() {
+      elements.patientModal.classList.remove('active');
+      elements.patientSuggestions.style.display = 'none';
+      closeMedDropdown();
+    }
+
+    function handlePatientSubmit(e) {
+      e.preventDefault();
+
+      const payload = {
+        rowIndex: document.getElementById('formRowIndex').value,
+        isNewScheduleEntry: document.getElementById('formIsNewSchedule').value === 'true',
+        name: document.getElementById('formPatientName').value.trim(),
+        diagnosis: document.getElementById('formDiagnosis').value.trim(),
+        scheduleDate: document.getElementById('formScheduleDate').value.trim(),
+        protocol: elements.formProtocol.value.trim(),
+        brand: document.getElementById('formBrand').value.trim(),
+        lotNumber: document.getElementById('formLotNumber').value.trim(),
+        expiryDate: document.getElementById('formExpiryDate').value.trim(),
+        dosage: document.getElementById('formDosage').value.trim(),
+        quantity: document.getElementById('formQuantity').value.trim()
+      };
+
+      if (!payload.name) {
+        showToast('Patient Name is required.', 'error');
+        document.getElementById('formPatientName').focus();
+        return;
+      }
+
+      if (!payload.scheduleDate) {
+        showToast('Chemo Therapy Schedule Date is required.', 'error');
+        document.getElementById('formScheduleDate').focus();
+        return;
+      }
+
+      if (!payload.protocol) {
+        showToast('Please select or specify a Chemo Protocol / Medicine.', 'error');
+        return;
+      }
+
+      if (!payload.brand) {
+        showToast('Brand Name is required.', 'error');
+        document.getElementById('formBrand').focus();
+        return;
+      }
+
+      if (!payload.dosage) {
+        showToast('Dosage is required.', 'error');
+        document.getElementById('formDosage').focus();
+        return;
+      }
+
+      if (!payload.quantity) {
+        showToast('Quantity Required is required.', 'error');
+        document.getElementById('formQuantity').focus();
+        return;
+      }
+
+      showLoading('Saving Treatment Schedule to Google Sheets...');
+      closePatientModal();
+
+      if (typeof google === 'undefined' || !google.script || !google.script.run) {
+        hideLoading();
+        // Simulate local save
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (payload.rowIndex && !payload.isNewScheduleEntry) {
+          const idx = state.patients.findIndex(p => p.rowIndex == payload.rowIndex);
+          if (idx !== -1) {
+            state.patients[idx] = { ...state.patients[idx], ...payload, lastVisit: todayStr };
+          }
+        } else {
+          state.patients.unshift({
+            rowIndex: state.patients.length + 2,
+            ...payload,
+            lastVisit: todayStr
+          });
+        }
+        updateStats();
+        renderPatientsTable();
+        showToast('Treatment schedule recorded successfully (simulated).', 'success');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(res => {
+          showToast(res.message, 'success');
+          loadInitialData();
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          showToast('Error saving: ' + err.message, 'error');
+        })
+        .savePatientRecord(payload);
+    }
+
+    async function confirmDeletePatient(rowIndex) {
+      const item = state.patients.find(p => p.rowIndex === rowIndex);
+      const patientName = item ? item.name : 'this patient';
+      const scheduleDate = item ? item.scheduleDate : '';
+
+      const confirmed = await showClinicalConfirm({
+        title: 'Delete Treatment Schedule',
+        message: `Are you sure you want to delete the chemotherapy session for <strong>${escapeHtml(patientName)}</strong> on <strong>${escapeHtml(scheduleDate || 'this date')}</strong>?`,
+        confirmText: 'Delete Schedule',
+        isDanger: true,
+        icon: '🗑️'
+      });
+
+      if (!confirmed) return;
+
+      showLoading('Removing schedule from registry...');
+
+      if (typeof google === 'undefined' || !google.script || !google.script.run) {
+        hideLoading();
+        state.patients = state.patients.filter(p => p.rowIndex != rowIndex);
+        updateStats();
+        renderPatientsTable();
+        showToast('Treatment schedule removed from clinical registry (simulated).', 'info');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(res => {
+          showToast(res.message, 'info');
+          loadInitialData();
+        })
+        .withFailureHandler(err => {
+          hideLoading();
+          showToast('Unable to delete schedule: ' + err.message, 'error');
+        })
+        .deletePatientRecord({ rowIndex: rowIndex });
     }
 
     // ==========================================
@@ -1429,7 +2043,7 @@
       const optionsContainer = elements.medOptionsList;
       const currentSelected = elements.formProtocol.value;
 
-      const filtered = q 
+      const filtered = q
         ? state.medicines.filter(name => name.toLowerCase().includes(q))
         : state.medicines.slice(0, 80);
 
@@ -1438,7 +2052,7 @@
       if (filtered.length === 0) {
         optionsContainer.innerHTML = `
           <div style="padding: 16px 14px; text-align: center; color: var(--text-dim); font-size: 13px;">
-            <div>Medicine not found on list.</div>
+            <div>Medicine not found in formulary.</div>
             <button type="button" class="btn-add-on-fly" onclick="handleAddMedicineFromDropdown('${escapeQuotes(state.currentSearchMedQuery)}')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
               Add "${escapeHtml(state.currentSearchMedQuery)}" to Database
@@ -1457,7 +2071,6 @@
         `;
       }).join('');
 
-      // If user typed something and it's not an exact match, show option to add at the bottom too
       if (q && !filtered.some(n => n.toLowerCase() === q)) {
         html += `
           <div style="padding: 8px 12px; border-top: 1px dashed var(--border-color); background: var(--bg-card);">
@@ -1480,10 +2093,13 @@
 
       closeMedDropdown();
 
-      // Automatically advance focus to Dosage field
-      const dosageInput = document.getElementById('formDosage');
-      if (dosageInput) {
-        setTimeout(() => dosageInput.focus(), 100);
+      // Automatically advance focus to Brand or Dosage field
+      const brandInput = document.getElementById('formBrand');
+      if (brandInput && !brandInput.value) {
+        setTimeout(() => brandInput.focus(), 100);
+      } else {
+        const dosageInput = document.getElementById('formDosage');
+        if (dosageInput) setTimeout(() => dosageInput.focus(), 100);
       }
     }
 
@@ -1523,191 +2139,6 @@
     }
 
     // ==========================================
-    // PATIENT CRUD MODAL
-    // ==========================================
-
-    function openPatientModal() {
-      document.getElementById('modalTitle').textContent = 'Register Patient Treatment';
-      document.getElementById('patientForm').reset();
-      document.getElementById('formRowIndex').value = '';
-      document.getElementById('formBrand').value = '';
-      clearMedSelection();
-      disableCustomProtocol();
-
-      elements.patientModal.classList.add('active');
-      document.getElementById('formPatientName').focus();
-    }
-
-    function openEditModal(rowIndex) {
-      const item = state.patients.find(p => p.rowIndex === rowIndex);
-      if (!item) return;
-
-      document.getElementById('modalTitle').textContent = `Edit Patient Record: ${item.name}`;
-      document.getElementById('formRowIndex').value = rowIndex;
-      document.getElementById('formPatientName').value = item.name || '';
-      document.getElementById('formDiagnosis').value = item.diagnosis || '';
-      document.getElementById('formBrand').value = item.brand || '';
-      document.getElementById('formDosage').value = item.dosage || '';
-
-      if (item.protocol) {
-        selectUniqueMedicine(item.protocol);
-      } else {
-        clearMedSelection();
-      }
-
-      elements.patientModal.classList.add('active');
-    }
-
-    function closePatientModal() {
-      elements.patientModal.classList.remove('active');
-      closeMedDropdown();
-    }
-
-    // Patient Name Autocomplete from existing patients
-    function handlePatientNameInput(val) {
-      const q = val.toLowerCase().trim();
-      if (!q || state.patients.length === 0) {
-        elements.patientSuggestions.style.display = 'none';
-        return;
-      }
-
-      const matches = state.patients.filter(p => p.name && p.name.toLowerCase().includes(q)).slice(0, 6);
-      if (matches.length === 0) {
-        elements.patientSuggestions.style.display = 'none';
-        return;
-      }
-
-      elements.patientSuggestions.innerHTML = matches.map(p => `
-        <div class="autocomplete-item" onclick="selectMasterPatient(${p.rowIndex})">
-          <div>
-            <div style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${escapeHtml(p.name)}</div>
-            <small style="color: var(--text-dim); font-size: 11px;">Diagnosis: ${escapeHtml(p.diagnosis || 'N/A')} &bull; Brand: ${escapeHtml(p.brand || 'N/A')}</small>
-          </div>
-          <span style="font-size: 11px; color: var(--brand-primary); font-family: 'JetBrains Mono', monospace;">Existing</span>
-        </div>
-      `).join('');
-      elements.patientSuggestions.style.display = 'block';
-    }
-
-    function selectMasterPatient(rowIndex) {
-      const p = state.patients.find(item => item.rowIndex === rowIndex);
-      if (!p) return;
-
-      document.getElementById('formRowIndex').value = p.rowIndex;
-      document.getElementById('formPatientName').value = p.name;
-      document.getElementById('formDiagnosis').value = p.diagnosis || '';
-      document.getElementById('formBrand').value = p.brand || '';
-      if (p.protocol && !elements.formProtocol.value) {
-        selectUniqueMedicine(p.protocol);
-      }
-      if (p.dosage && !document.getElementById('formDosage').value) {
-        document.getElementById('formDosage').value = p.dosage;
-      }
-      elements.patientSuggestions.style.display = 'none';
-    }
-
-    function handlePatientSubmit(e) {
-      e.preventDefault();
-
-      const payload = {
-        rowIndex: document.getElementById('formRowIndex').value,
-        name: document.getElementById('formPatientName').value.trim(),
-        diagnosis: document.getElementById('formDiagnosis').value.trim(),
-        protocol: elements.formProtocol.value.trim(),
-        brand: document.getElementById('formBrand').value.trim(),
-        dosage: document.getElementById('formDosage').value.trim()
-      };
-
-      if (!payload.protocol) {
-        showToast('Please select or specify a Chemo Protocol / Medicine.', 'error');
-        return;
-      }
-
-      if (!payload.brand) {
-        showToast('Brand Name is required.', 'error');
-        document.getElementById('formBrand').focus();
-        return;
-      }
-
-      showLoading('Saving to Master_Patients in Google Sheets...');
-      closePatientModal();
-
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        hideLoading();
-        showToast('Running locally. Record simulated.', 'info');
-        // Simulate local save
-        const todayStr = new Date().toISOString().split('T')[0];
-        if (payload.rowIndex) {
-          const idx = state.patients.findIndex(p => p.rowIndex == payload.rowIndex);
-          if (idx !== -1) {
-            state.patients[idx] = { ...state.patients[idx], ...payload, lastVisit: todayStr };
-          }
-        } else {
-          state.patients.unshift({
-            rowIndex: state.patients.length + 2,
-            name: payload.name,
-            diagnosis: payload.diagnosis,
-            protocol: payload.protocol,
-            brand: payload.brand,
-            dosage: payload.dosage,
-            lastVisit: todayStr
-          });
-        }
-        updateStats();
-        renderPatientsTable();
-        return;
-      }
-
-      google.script.run
-        .withSuccessHandler(res => {
-          showToast(res.message, 'success');
-          loadInitialData();
-        })
-        .withFailureHandler(err => {
-          hideLoading();
-          showToast('Error saving: ' + err.message, 'error');
-        })
-        .savePatientRecord(payload);
-    }
-
-    async function confirmDeletePatient(rowIndex) {
-      const item = state.patients.find(p => p.rowIndex === rowIndex);
-      const patientName = item ? item.name : 'this patient';
-
-      const confirmed = await showClinicalConfirm({
-        title: 'Remove Patient Record',
-        message: `Are you sure you want to remove <strong>${escapeHtml(patientName)}</strong> from the treatment registry? This will permanently delete their clinical record and visit history.`,
-        confirmText: 'Delete Record',
-        isDanger: true,
-        icon: '🗑️'
-      });
-
-      if (!confirmed) return;
-
-      showLoading('Removing patient record from registry...');
-
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        hideLoading();
-        state.patients = state.patients.filter(p => p.rowIndex != rowIndex);
-        updateStats();
-        renderPatientsTable();
-        showToast('Patient record removed from the clinical registry (simulated).', 'info');
-        return;
-      }
-
-      google.script.run
-        .withSuccessHandler(res => {
-          showToast(res.message, 'info');
-          loadInitialData();
-        })
-        .withFailureHandler(err => {
-          hideLoading();
-          showToast('Unable to delete record: ' + err.message, 'error');
-        })
-        .deletePatientRecord({ rowIndex: rowIndex });
-    }
-
-    // ==========================================
     // MEDICINE REPOSITORY MODAL & ON-THE-FLY ADD
     // ==========================================
 
@@ -1723,7 +2154,7 @@
     function renderMedicineRepository(query) {
       const q = query.toLowerCase().trim();
       const tbody = document.getElementById('medsTableBody');
-      const filtered = q 
+      const filtered = q
         ? state.medicines.filter(name => name.toLowerCase().includes(q))
         : state.medicines.slice(0, 100);
 
@@ -1795,7 +2226,6 @@
         .withSuccessHandler(res => {
           hideLoading();
           showToast(res.message, 'success');
-          // Add to local list if not already present
           if (!state.medicines.some(m => m.toLowerCase() === medicineName.toLowerCase())) {
             state.medicines.push(medicineName);
             state.medicines.sort((a, b) => a.localeCompare(b));
@@ -1837,7 +2267,7 @@
         .withSuccessHandler(res => {
           hideLoading();
           showToast(res.message, 'success');
-          loadInitialData(); // Refresh patient table and state
+          loadInitialData();
         })
         .withFailureHandler(err => {
           hideLoading();
@@ -1995,13 +2425,63 @@
 
     function loadMockData() {
       state.patients = [
-        { rowIndex: 2, name: 'Chito Test', diagnosis: 'BREAST', protocol: 'PACLITAXEL 30MG/5ML VIAL', brand: 'Taxol', dosage: '1 vial', lastVisit: '2026-10-17' },
-        { rowIndex: 3, name: 'TABIOS, JULIO TADENA', diagnosis: 'MULTIPLE MYELOMA', protocol: 'BORTEZOMIB 3.5MG VIAL', brand: 'Velcade', dosage: '1.3 mg/m² (1 vial)', lastVisit: '2026-10-16' },
-        { rowIndex: 4, name: 'CALIXTRO, RENALYN CONCEPCION', diagnosis: 'BREAST', protocol: 'TRASTUZUMAB 440MG VIAL', brand: 'Herceptin', dosage: '440mg + 2 tabs', lastVisit: '2026-10-15' },
-        { rowIndex: 5, name: 'GACETA, DELIA INGUITO', diagnosis: 'MDS', protocol: 'AZACITIDINE 100MG VIAL', brand: 'Vidaza', dosage: '75mg/m²', lastVisit: '2026-10-15' }
+        {
+          rowIndex: 2,
+          name: 'Chito Chito 2',
+          diagnosis: 'MULTIPLE MYELOMA',
+          scheduleDate: '2026-10-20',
+          protocol: '(C) 0.9% SODIUM CHLORIDE 1L, PNSS 1L',
+          brand: 'Nacsol',
+          lotNumber: 'LOT-99210-A',
+          expiryDate: '2027-12-31',
+          dosage: '1000 mL IV',
+          quantity: '2 Vials',
+          lastVisit: '2026-10-20'
+        },
+        {
+          rowIndex: 3,
+          name: 'Chito Chito 2',
+          diagnosis: 'MULTIPLE MYELOMA',
+          scheduleDate: '2026-10-06',
+          protocol: 'BORTEZOMIB 3.5MG VIAL',
+          brand: 'Velcade',
+          lotNumber: 'LOT-88124-C',
+          expiryDate: '2027-08-15',
+          dosage: '1.3 mg/m²',
+          quantity: '1 Vial',
+          lastVisit: '2026-10-06'
+        },
+        {
+          rowIndex: 4,
+          name: 'Test',
+          diagnosis: 'COLON',
+          scheduleDate: '2026-10-19',
+          protocol: '(C) ACETAZOLAMIDE 250MG TABLET',
+          brand: 'Test',
+          lotNumber: 'LOT-44102-X',
+          expiryDate: '2028-01-30',
+          dosage: '250 mg',
+          quantity: '1 Vial',
+          lastVisit: '2026-10-19'
+        },
+        {
+          rowIndex: 5,
+          name: 'juan',
+          diagnosis: 'BREAST',
+          scheduleDate: '2026-10-20',
+          protocol: 'TRASTUZUMAB 600MG/5ML (120MG/ML) SOLUTION FOR INJECTION, 5ML VIAL',
+          brand: 'herceptin',
+          lotNumber: 'LOT-77312-H',
+          expiryDate: '2027-05-31',
+          dosage: '600 mg',
+          quantity: '1 Vial',
+          lastVisit: '2026-10-20'
+        }
       ];
 
       state.medicines = [
+        "(C) 0.9% SODIUM CHLORIDE 1L, PNSS 1L",
+        "(C) ACETAZOLAMIDE 250MG TABLET",
         "0.9% SODIUM CHLORIDE 500ML GLASS BOTTLE (IV INFUSION) (PNSS 500ML)",
         "ACICLOVIR 200MG/5ML SUSPENSION 60ML BOTTLE",
         "ACICLOVIR 25MG/ML, 10ML VIAL (IV INFUSION)",
@@ -2016,7 +2496,8 @@
         "GOSERELIN 3.6MG IMPLANT IN PREFILLED SYRINGE",
         "PACLITAXEL 100MG/16.7ML VIAL",
         "PEMBROLIZUMAB 100MG/4ML VIAL",
-        "TRASTUZUMAB 440MG VIAL"
+        "TRASTUZUMAB 440MG VIAL",
+        "TRASTUZUMAB 600MG/5ML (120MG/ML) SOLUTION FOR INJECTION, 5ML VIAL"
       ];
 
       updateStats();
@@ -2024,4 +2505,5 @@
     }
   </script>
 </body>
+
 </html>
