@@ -62,13 +62,14 @@ function getInitialData() {
   ensureRequiredSheets(ss);
 
   const patients = getPatientsList();
-  const uniqueMedicines = getUniqueMedicineList();
+  const medData = getUniqueMedicineList();
 
   return {
     institution: CONFIG.INSTITUTION_NAME,
     unit: CONFIG.UNIT_NAME,
     patients: patients,
-    medicines: uniqueMedicines // Array of unique medicine strings (no DMR codes)
+    medicines: medData.oncologyMedicines || [], // Curated oncology & chemo medicines (default)
+    allHospitalMedicines: medData.allMedicines || [] // Full hospital formulary
   };
 }
 
@@ -217,35 +218,20 @@ function getPatientsList() {
     const dosage = colMap.dosageCol >= 0 ? String(row[colMap.dosageCol] || '').trim() : '';
     const qty = colMap.qtyCol >= 0 ? String(row[colMap.qtyCol] || '').trim() : '';
 
-    // Format dates cleanly YYYY-MM-DD
+    // Format dates cleanly MM/DD/YYYY
     let scheduleStr = '';
     if (colMap.schedCol >= 0) {
-      const schedVal = row[colMap.schedCol];
-      if (schedVal instanceof Date && !isNaN(schedVal.getTime())) {
-        scheduleStr = Utilities.formatDate(schedVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-      } else {
-        scheduleStr = String(schedVal || '').trim();
-      }
+      scheduleStr = formatToMMDDYYYY(row[colMap.schedCol]);
     }
 
     let expiryStr = '';
     if (colMap.expiryCol >= 0) {
-      const expVal = row[colMap.expiryCol];
-      if (expVal instanceof Date && !isNaN(expVal.getTime())) {
-        expiryStr = Utilities.formatDate(expVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-      } else {
-        expiryStr = String(expVal || '').trim();
-      }
+      expiryStr = formatToMMDDYYYY(row[colMap.expiryCol]);
     }
 
     let lastVisitStr = '';
     if (colMap.lastVisitCol >= 0) {
-      const visitVal = row[colMap.lastVisitCol];
-      if (visitVal instanceof Date && !isNaN(visitVal.getTime())) {
-        lastVisitStr = Utilities.formatDate(visitVal, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-      } else {
-        lastVisitStr = String(visitVal || '').trim();
-      }
+      lastVisitStr = formatToMMDDYYYY(row[colMap.lastVisitCol]);
     }
 
     patients.push({
@@ -267,6 +253,50 @@ function getPatientsList() {
 }
 
 /**
+ * Robustly formats Date objects or date strings into MM/DD/YYYY.
+ * Gracefully parses Date objects, YYYY-MM-DD, DD/MM/YYYY, and existing MM/DD/YYYY strings.
+ */
+function formatToMMDDYYYY(val) {
+  if (!val) return '';
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    return Utilities.formatDate(val, Session.getScriptTimeZone(), 'MM/dd/yyyy');
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+
+  // Matches YYYY-MM-DD (e.g. 2026-10-24)
+  const ymdMatch = str.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+  if (ymdMatch) {
+    const y = ymdMatch[1];
+    const m = ('0' + ymdMatch[2]).slice(-2);
+    const d = ('0' + ymdMatch[3]).slice(-2);
+    return m + '/' + d + '/' + y;
+  }
+
+  // Matches DD/MM/YYYY or MM/DD/YYYY (e.g. 24/10/2026 or 10/24/2026)
+  const slashMatch = str.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);
+  if (slashMatch) {
+    const p1 = parseInt(slashMatch[1], 10);
+    const p2 = parseInt(slashMatch[2], 10);
+    const y = slashMatch[3];
+    // If the first part is > 12, it is definitely DD/MM/YYYY -> convert to MM/DD/YYYY
+    if (p1 > 12 && p2 <= 12) {
+      return ('0' + p2).slice(-2) + '/' + ('0' + p1).slice(-2) + '/' + y;
+    }
+    // Otherwise normalize leading zeroes for MM/DD/YYYY
+    return ('0' + p1).slice(-2) + '/' + ('0' + p2).slice(-2) + '/' + y;
+  }
+
+  // Try parsing with Date constructor as fallback
+  const parsed = new Date(str);
+  if (!isNaN(parsed.getTime())) {
+    return Utilities.formatDate(parsed, Session.getScriptTimeZone(), 'MM/dd/yyyy');
+  }
+
+  return str;
+}
+
+/**
  * Saves (appends or updates) a patient treatment schedule record in Master_Patients.
  * Supports updating an existing session row or appending a new schedule date entry.
  */
@@ -282,15 +312,15 @@ function savePatientRecord(payload) {
   ensureRequiredSheets(ss);
   const sheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   const colMap = getMasterPatientColumnMap(sheet);
-  const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MM/dd/yyyy');
 
   const targetName = payload.name.trim();
   const diagnosis = (payload.diagnosis || '').trim();
-  const scheduleDate = (payload.scheduleDate || todayStr).trim();
+  const scheduleDate = formatToMMDDYYYY(payload.scheduleDate || todayStr);
   const protocol = (payload.protocol || '').trim();
   const brand = payload.brand.trim();
   const lotNumber = (payload.lotNumber || '').trim();
-  const expiryDate = (payload.expiryDate || '').trim();
+  const expiryDate = formatToMMDDYYYY(payload.expiryDate || '');
   const dosage = (payload.dosage || '').trim();
   const quantity = (payload.quantity || '').trim();
 
@@ -358,41 +388,131 @@ function deletePatientRecord(payload) {
 }
 
 // ==========================================
-// MEDICINE REPOSITORY (UNIQUE, NO CODES)
+// MEDICINE REPOSITORY & ONCOLOGY FILTERING
+// (Philippine National Formulary Section 9.0)
 // ==========================================
 
+const ONCOLOGY_GENERIC_PATTERNS = [
+  // Platinum Coordination Complexes
+  /\bcarboplatin\b/i, /\bcisplatin\b/i, /\boxaliplatin\b/i,
+  // Taxanes, Plant Alkaloids & Topoisomerase Inhibitors
+  /\bpaclitaxel\b/i, /\bdocetaxel\b/i, /\bcabazitaxel\b/i,
+  /\bvincristine\b/i, /\bvinblastine\b/i, /\bvinorelbine\b/i,
+  /\betoposide\b/i, /\birinotecan\b/i, /\btopotecan\b/i,
+  // Antimetabolites
+  /\bfluorouracil\b/i, /\b5-fu\b/i, /\bcapecitabine\b/i, /\bgemcitabine\b/i,
+  /\bcytarabine\b/i, /\bmethotrexate\b/i, /\bazacitidine\b/i, /\bdecitabine\b/i,
+  /\bmercaptopurine\b/i, /\b6-mp\b/i, /\bpemetrexed\b/i, /\bfludarabine\b/i,
+  /\bhydroxyurea\b/i, /\bhydroxycarbamide\b/i, /\bcladribine\b/i, /\btioguanine\b/i,
+  // Anthracyclines & Cytotoxic Antibiotics
+  /\bdoxorubicin\b/i, /\bepirubicin\b/i, /\bdaunorubicin\b/i, /\bidarubicin\b/i,
+  /\bbleomycin\b/i, /\bmitomycin\b/i, /\bdactinomycin\b/i,
+  // Alkylating Agents
+  /\bcyclophosphamide\b/i, /\bifosfamide\b/i, /\bmelphalan\b/i, /\bchlorambucil\b/i,
+  /\bdacarbazine\b/i, /\btemozolomide\b/i, /\bbendamustine\b/i, /\bbusulfan\b/i,
+  /\blomustine\b/i, /\bcarmustine\b/i, /\bthiotepa\b/i,
+  // Targeted Therapies, Monoclonal Antibodies & Immunotherapies
+  /\btrastuzumab\b/i, /\brituximab\b/i, /\bbevacizumab\b/i, /\bcetuximab\b/i,
+  /\bpertuzumab\b/i, /\bpanitumumab\b/i, /\bpembrolizumab\b/i, /\bnivolumab\b/i,
+  /\batezolizumab\b/i, /\bdurvalumab\b/i, /\bavelumab\b/i, /\bipilimumab\b/i,
+  /\bbortezomib\b/i, /\bimatinib\b/i, /\berlotinib\b/i, /\bgefitinib\b/i,
+  /\bosimertinib\b/i, /\bsorafenib\b/i, /\bsunitinib\b/i, /\bnilotinib\b/i,
+  /\bdasatinib\b/i, /\blenvatinib\b/i, /\bcabozantinib\b/i, /\bregorafenib\b/i,
+  /\bolaparib\b/i, /\bpalbociclib\b/i, /\bribociclib\b/i, /\babemaciclib\b/i,
+  /\balectinib\b/i, /\bbrigatinib\b/i, /\bcrizotinib\b/i, /\bruxolitinib\b/i,
+  /\blenalidomide\b/i, /\bthalidomide\b/i, /\bpomalidomide\b/i,
+  // Hormonal & Endocrine Oncology
+  /\btamoxifen\b/i, /\bletrozole\b/i, /\banastrozole\b/i, /\bexemestane\b/i,
+  /\bfulvestrant\b/i, /\bbicalutamide\b/i, /\bflutamide\b/i, /\bgoserelin\b/i,
+  /\bleuprorelin\b/i, /\bleuprolide\b/i, /\btriptorelin\b/i, /\babiraterone\b/i,
+  /\benzalutamide\b/i, /\bdegarelix\b/i,
+  // Cancer-Specific Rescue Agents (Direct Chemo Antidotes Only)
+  /\bmesna\b/i, /\bleucovorin\b/i, /\bfolinate\b/i, /\bfilgrastim\b/i, /\bpegfilgrastim\b/i
+];
+
 /**
- * Retrieves all unique medicine names from Column B of the Medicine tab.
- * Deduplicates all names and excludes DMR Codes.
+ * Checks if a drug description contains a recognized oncology or chemotherapy generic name.
+ */
+function isRecognizedOncologyMedicine(name) {
+  if (!name) return false;
+  const str = String(name).trim();
+  for (let i = 0; i < ONCOLOGY_GENERIC_PATTERNS.length; i++) {
+    if (ONCOLOGY_GENERIC_PATTERNS[i].test(str)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Retrieves deduplicated medicines from Column B of the Medicine tab.
+ * Segregates into:
+ *  - oncologyMedicines: Verified PNF Section 9.0 antineoplastics & cancer-specific drugs
+ *  - allMedicines: Full hospital catalog (all 2,700+ formulary drugs)
  */
 function getUniqueMedicineList() {
   const ss = getSpreadsheet();
-  const sheet = ss.getSheetByName(CONFIG.MEDICINE_SHEET);
-  if (!sheet) return [];
+  const medSheet = ss.getSheetByName(CONFIG.MEDICINE_SHEET);
+  const seenAll = new Set();
+  const allMeds = [];
+  const oncologyMeds = [];
 
-  const lastRow = sheet.getLastRow();
-  if (lastRow < 2) return [];
+  // 1. Process hospital medicine formulary
+  if (medSheet) {
+    const lastRow = medSheet.getLastRow();
+    if (lastRow >= 2) {
+      const values = medSheet.getRange(2, 2, lastRow - 1, 1).getValues();
+      for (let i = 0; i < values.length; i++) {
+        const rawName = String(values[i][0] || '').trim();
+        if (!rawName) continue;
 
-  const values = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
-  const seen = new Set();
-  const uniqueMeds = [];
-
-  for (let i = 0; i < values.length; i++) {
-    const rawName = String(values[i][0] || '').trim();
-    if (!rawName) continue;
-
-    const key = rawName.toUpperCase();
-    if (!seen.has(key)) {
-      seen.add(key);
-      uniqueMeds.push(rawName);
+        const key = rawName.toUpperCase();
+        if (!seenAll.has(key)) {
+          seenAll.add(key);
+          allMeds.push(rawName);
+          if (isRecognizedOncologyMedicine(rawName)) {
+            oncologyMeds.push(rawName);
+          }
+        }
+      }
     }
   }
 
-  uniqueMeds.sort(function(a, b) {
+  // 2. Retain any recognized oncology protocols recorded in Master_Patients
+  const masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
+  if (masterSheet) {
+    const lastRow = masterSheet.getLastRow();
+    if (lastRow >= 2) {
+      const protocols = masterSheet.getRange(2, 4, lastRow - 1, 1).getValues(); // Column 4: Chemo Protocol
+      const seenOnco = new Set(oncologyMeds.map(function(m) { return m.toUpperCase(); }));
+      for (let i = 0; i < protocols.length; i++) {
+        const proto = String(protocols[i][0] || '').trim();
+        if (!proto) continue;
+        const key = proto.toUpperCase();
+        if (!seenAll.has(key)) {
+          seenAll.add(key);
+          allMeds.push(proto);
+        }
+        if (isRecognizedOncologyMedicine(proto) && !seenOnco.has(key)) {
+          seenOnco.add(key);
+          oncologyMeds.push(proto);
+        }
+      }
+    }
+  }
+
+  allMeds.sort(function(a, b) {
     return a.localeCompare(b);
   });
 
-  return uniqueMeds;
+  oncologyMeds.sort(function(a, b) {
+    return a.localeCompare(b);
+  });
+
+  return {
+    oncologyMedicines: oncologyMeds,
+    allMedicines: allMeds
+  };
 }
 
 /**
