@@ -483,7 +483,9 @@ function getUniqueMedicineList() {
   if (masterSheet) {
     const lastRow = masterSheet.getLastRow();
     if (lastRow >= 2) {
-      const protocols = masterSheet.getRange(2, 4, lastRow - 1, 1).getValues(); // Column 4: Chemo Protocol
+      const colMap = getMasterPatientColumnMap(masterSheet);
+      const protoColIdx = colMap.protoCol >= 0 ? colMap.protoCol + 1 : 4;
+      const protocols = masterSheet.getRange(2, protoColIdx, lastRow - 1, 1).getValues();
       const seenOnco = new Set(oncologyMeds.map(function(m) { return m.toUpperCase(); }));
       for (let i = 0; i < protocols.length; i++) {
         const proto = String(protocols[i][0] || '').trim();
@@ -566,26 +568,17 @@ function addNewMedicine(medicineName) {
 // ==========================================
 
 /**
- * Maintains ONLY Master_Patients and Medicine tabs,
- * removes all extraneous weekly schedule tabs (SEP 28-OCT 2, Copy of OCT 5-9, etc.),
- * and removes obsolete columns like 'Hospital Number' from Master_Patients.
+ * Safely cleans columns inside Master_Patients without touching ANY other tabs.
+ * Preserves all existing tabs in the spreadsheet completely untouched.
  */
 function cleanupSpreadsheetTabs() {
   const ss = getSpreadsheet();
   ensureRequiredSheets(ss);
-  const sheets = ss.getSheets();
+
+  // NOTE: Strictly non-destructive. We do NOT delete any sheets to protect existing tabs!
   const deletedTabs = [];
 
-  // 1. Delete extraneous weekly tabs
-  sheets.forEach(sheet => {
-    const name = sheet.getName();
-    if (name !== CONFIG.MASTER_PATIENT_SHEET && name !== CONFIG.MEDICINE_SHEET) {
-      deletedTabs.push(name);
-      ss.deleteSheet(sheet);
-    }
-  });
-
-  // 2. Remove 'Hospital Number' column(s) from Master_Patients
+  // Remove 'Hospital Number' column(s) from Master_Patients only
   let hospColRemoved = false;
   const masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (masterSheet && masterSheet.getLastColumn() > 0) {
@@ -600,19 +593,15 @@ function cleanupSpreadsheetTabs() {
     }
   }
 
-  let message = 'Cleanup complete. Retained only Master_Patients and Medicine tabs.';
-  if (deletedTabs.length > 0 && hospColRemoved) {
-    message = 'Cleanup complete! Removed ' + deletedTabs.length + ' obsolete tabs and deleted Hospital Number column.';
-  } else if (hospColRemoved) {
-    message = 'Cleanup complete! Hospital Number column successfully removed from Master_Patients.';
-  } else if (deletedTabs.length > 0) {
-    message = 'Cleanup complete! Removed ' + deletedTabs.length + ' obsolete tabs.';
+  let message = 'Master_Patients registry columns verified. All existing spreadsheet tabs preserved safely.';
+  if (hospColRemoved) {
+    message = 'Cleanup complete! Hospital Number column removed from Master_Patients. All existing tabs preserved.';
   }
 
   return {
     success: true,
-    deletedCount: deletedTabs.length,
-    deletedTabs: deletedTabs,
+    deletedCount: 0,
+    deletedTabs: [],
     hospitalColumnRemoved: hospColRemoved,
     message: message
   };
