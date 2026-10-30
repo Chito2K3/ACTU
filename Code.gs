@@ -87,6 +87,7 @@ function ensureRequiredSheets(ss) {
       'Therapy Schedule',
       'Chemo Protocol',
       'Brand Name',
+      'Targeted Therapy',
       'Lot Number',
       'Expiry Date',
       'Dosage',
@@ -95,7 +96,7 @@ function ensureRequiredSheets(ss) {
       'Created Date',
       'Last Visit'
     ]);
-    masterSheet.getRange(1, 1, 1, 12).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
+    masterSheet.getRange(1, 1, 1, 13).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
     masterSheet.setFrozenRows(1);
   } else {
     // If sheet exists, ensure all required columns are present
@@ -108,6 +109,7 @@ function ensureRequiredSheets(ss) {
 
       if (!headers.some(function(h) { return h.includes('SCHEDULE'); })) missingHeaders.push('Therapy Schedule');
       if (!headers.some(function(h) { return h.includes('BRAND'); })) missingHeaders.push('Brand Name');
+      if (!headers.some(function(h) { return h.includes('TARGETED'); })) missingHeaders.push('Targeted Therapy');
       if (!headers.some(function(h) { return h.includes('LOT'); })) missingHeaders.push('Lot Number');
       if (!headers.some(function(h) { return h.includes('EXPIR'); })) missingHeaders.push('Expiry Date');
       if (!headers.some(function(h) { return h.includes('QUANTITY') || h === 'QTY'; })) missingHeaders.push('Quantity Required');
@@ -154,6 +156,7 @@ function getMasterPatientColumnMap(sheet) {
     schedCol: -1,
     protoCol: -1,
     brandCol: -1,
+    targetedCol: -1,
     lotCol: -1,
     expiryCol: -1,
     dosageCol: -1,
@@ -171,6 +174,7 @@ function getMasterPatientColumnMap(sheet) {
     else if (h.includes('SCHEDULE') || h.includes('THERAPY SCHEDULE')) map.schedCol = c;
     else if (h.includes('PROTOCOL')) map.protoCol = c;
     else if (h.includes('BRAND')) map.brandCol = c;
+    else if (h.includes('TARGETED')) map.targetedCol = c;
     else if (h.includes('LOT')) map.lotCol = c;
     else if (h.includes('EXPIR') || h.includes('EXPIRY')) map.expiryCol = c;
     else if (h.includes('QUANTITY') || h === 'QTY' || h.includes('QTY')) map.qtyCol = c;
@@ -218,6 +222,7 @@ function getPatientsList() {
     const diag = colMap.diagCol >= 0 ? String(row[colMap.diagCol] || '').trim() : '';
     const proto = colMap.protoCol >= 0 ? String(row[colMap.protoCol] || '').trim() : '';
     const brand = colMap.brandCol >= 0 ? String(row[colMap.brandCol] || '').trim() : '';
+    const targetedTherapy = colMap.targetedCol >= 0 ? String(row[colMap.targetedCol] || '').trim() : '';
     const lot = colMap.lotCol >= 0 ? String(row[colMap.lotCol] || '').trim() : '';
     const dosage = colMap.dosageCol >= 0 ? String(row[colMap.dosageCol] || '').trim() : '';
     const qty = colMap.qtyCol >= 0 ? String(row[colMap.qtyCol] || '').trim() : '';
@@ -246,6 +251,7 @@ function getPatientsList() {
       scheduleDate: scheduleStr || lastVisitStr, // Fallback to last visit date if schedule date was empty
       protocol: proto,
       brand: brand,
+      targetedTherapy: targetedTherapy,
       lotNumber: lot,
       expiryDate: expiryStr,
       dosage: dosage,
@@ -325,6 +331,7 @@ function savePatientRecord(payload) {
   const scheduleDate = formatToMMDDYYYY(payload.scheduleDate || todayStr);
   const protocol = (payload.protocol || '').trim();
   const brand = payload.brand.trim();
+  const targetedTherapy = (payload.targetedTherapy || '').trim();
   const lotNumber = (payload.lotNumber || '').trim();
   const expiryDate = formatToMMDDYYYY(payload.expiryDate || '');
   const dosage = (payload.dosage || '').trim();
@@ -340,6 +347,7 @@ function savePatientRecord(payload) {
     if (colMap.schedCol >= 0) sheet.getRange(targetRow, colMap.schedCol + 1).setValue(scheduleDate);
     if (colMap.protoCol >= 0) sheet.getRange(targetRow, colMap.protoCol + 1).setValue(protocol);
     if (colMap.brandCol >= 0) sheet.getRange(targetRow, colMap.brandCol + 1).setValue(brand);
+    if (colMap.targetedCol >= 0) sheet.getRange(targetRow, colMap.targetedCol + 1).setValue(targetedTherapy);
     if (colMap.lotCol >= 0) sheet.getRange(targetRow, colMap.lotCol + 1).setValue(lotNumber);
     if (colMap.expiryCol >= 0) sheet.getRange(targetRow, colMap.expiryCol + 1).setValue(expiryDate);
     if (colMap.dosageCol >= 0) sheet.getRange(targetRow, colMap.dosageCol + 1).setValue(dosage);
@@ -355,13 +363,14 @@ function savePatientRecord(payload) {
   }
 
   // Otherwise, append a new row for this therapy schedule session
-  const maxCols = Math.max(sheet.getLastColumn(), 12);
+  const maxCols = Math.max(sheet.getLastColumn(), 13);
   const newRow = new Array(maxCols).fill('');
   if (colMap.nameCol >= 0) newRow[colMap.nameCol] = targetName;
   if (colMap.diagCol >= 0) newRow[colMap.diagCol] = diagnosis;
   if (colMap.schedCol >= 0) newRow[colMap.schedCol] = scheduleDate;
   if (colMap.protoCol >= 0) newRow[colMap.protoCol] = protocol;
   if (colMap.brandCol >= 0) newRow[colMap.brandCol] = brand;
+  if (colMap.targetedCol >= 0) newRow[colMap.targetedCol] = targetedTherapy;
   if (colMap.lotCol >= 0) newRow[colMap.lotCol] = lotNumber;
   if (colMap.expiryCol >= 0) newRow[colMap.expiryCol] = expiryDate;
   if (colMap.dosageCol >= 0) newRow[colMap.dosageCol] = dosage;

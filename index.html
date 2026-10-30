@@ -19,11 +19,14 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <style>
-    :root {
+    :root,
+    [data-theme="dark"] {
+      color-scheme: dark;
       --bg-base: #0f172a;
       --bg-surface: #1e293b;
       --bg-card: #1e293b;
       --bg-subtle: #334155;
+      --bg-input: #0f172a;
       --border-color: #334155;
       --border-focus: #38bdf8;
 
@@ -54,10 +57,12 @@
 
     /* Light Theme */
     [data-theme="light"] {
+      color-scheme: light;
       --bg-base: #f8fafc;
       --bg-surface: #ffffff;
       --bg-card: #ffffff;
       --bg-subtle: #f1f5f9;
+      --bg-input: #ffffff;
       --border-color: #e2e8f0;
       --border-focus: #0284c7;
 
@@ -695,6 +700,27 @@
 
     [data-theme="light"] .source-badge.outside {
       color: #d97706;
+    }
+
+    .targeted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 10.5px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    [data-theme="light"] .targeted-badge {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, 0.32);
     }
 
     .source-checkbox-grid {
@@ -1749,6 +1775,7 @@
     }
 
     @media (max-width: 860px) {
+
       .form-row,
       .source-checkbox-grid {
         grid-template-columns: 1fr;
@@ -1807,6 +1834,405 @@
       background: rgba(255, 255, 255, 0.08);
       color: inherit;
     }
+
+    /* ==========================================
+       PRINTABLE REPORT BUILDER & @MEDIA PRINT
+       ========================================== */
+    #reportModal .modal-card {
+      width: 96vw;
+      max-width: 1520px;
+      height: 95vh;
+      max-height: 95vh;
+    }
+
+    .report-filter-toolbar {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .report-filter-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1.15fr 1.1fr 1.15fr 1.45fr;
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 1200px) {
+      .report-filter-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+    }
+
+    .report-filter-item label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .report-filter-select,
+    .report-filter-input {
+      width: 100%;
+      padding: 8px 11px;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    select option,
+    .report-filter-select option,
+    .session-select-control option {
+      background-color: #1e293b;
+      color: #f8fafc;
+      font-weight: 600;
+      padding: 6px 10px;
+    }
+
+    [data-theme="light"] select option,
+    [data-theme="light"] .report-filter-select option,
+    [data-theme="light"] .session-select-control option {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+
+    .report-filter-select:focus,
+    .report-filter-input:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15);
+    }
+
+    /* White-Paper Printable Sheet Preview */
+    .printable-report-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1.5px solid #475569;
+      border-radius: 8px;
+      padding: 28px 32px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .print-doc-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #475569;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-bottom: 2.5px solid #0f172a;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+
+    .print-doc-institution {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .print-doc-institution img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .print-doc-institution h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .print-doc-institution .print-doc-dept {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0284c7;
+      margin-top: 2px;
+    }
+
+    .print-doc-institution .print-doc-sub {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    .print-meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      background: #f8fafc;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: #1e293b;
+    }
+
+    .print-meta-item strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .print-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .print-kpi-box {
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .print-kpi-box .kpi-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.25;
+    }
+
+    .print-kpi-box .kpi-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #475569;
+      letter-spacing: 0.03em;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .print-section-heading {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f172a;
+      background: #e2e8f0;
+      border: 1px solid #334155;
+      border-bottom: none;
+      border-radius: 5px 5px 0 0;
+      margin: 18px 0 0 0;
+      padding: 9px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #0f172a;
+    }
+
+    .print-table th,
+    .print-table td {
+      border: 1px solid #334155;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .print-table thead th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 9px 10px;
+    }
+
+    .print-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .print-pill-box {
+      display: inline-block;
+      border: 1px solid #1e293b;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .print-pill-box.targeted {
+      border-color: #047857;
+      color: #047857;
+      background: #ecfdf5;
+    }
+
+    /* 3-Column Signatory Footer (Exact Match to Reference Print Preview) */
+    .print-signatory-footer {
+      margin-top: 44px;
+      padding-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 42px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .print-signatory-col {
+      text-align: center;
+    }
+
+    .print-signatory-name-input {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+      min-height: 22px;
+      padding-bottom: 5px;
+      outline: none;
+      cursor: text;
+    }
+
+    .print-signatory-name-input:empty::before {
+      content: attr(data-placeholder);
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 10.5px;
+    }
+
+    .print-signatory-line {
+      border-top: 1.5px solid #0f172a;
+      padding-top: 8px;
+      margin-top: 2px;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .print-signatory-role {
+      font-size: 10.5px;
+      color: #475569;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    @media print {
+      @page {
+        size: landscape;
+        margin: 10mm;
+      }
+
+      :root,
+      html,
+      body,
+      body[data-theme="dark"],
+      body[data-theme="light"] {
+        color-scheme: light !important;
+        --bg-base: #ffffff !important;
+        --bg-surface: #ffffff !important;
+        --bg-card: #ffffff !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      header,
+      main,
+      #loadingOverlay,
+      #toastContainer,
+      #patientModal,
+      #medsModal,
+      #clinicalDialogOverlay,
+      #patientHistoryModal,
+      .no-print {
+        display: none !important;
+      }
+
+      #reportModal {
+        position: static !important;
+        display: block !important;
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      #reportModal .modal-card {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: none !important;
+        height: auto !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        overflow: visible !important;
+        animation: none !important;
+      }
+
+      #reportModal .modal-body {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+      }
+
+      .printable-report-sheet {
+        border: 1.5px solid #334155 !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        padding: 22px 26px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+      }
+
+      .print-signatory-name-input:empty::before {
+        content: "" !important;
+      }
+
+      .print-table thead {
+        display: table-header-group;
+      }
+
+      .print-table tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
   </style>
 </head>
 
@@ -1862,6 +2288,13 @@
           Meds Repository
         </button>
 
+        <!-- Printable & PDF Report Builder Button -->
+        <button class="btn btn-secondary" id="btnOpenReportModal" onclick="openReportModal()"
+          title="Generate Printable & Save-as-PDF Chemotherapy Compounding Report"
+          style="padding: 9px 14px; font-size: 13px; border-color: rgba(14, 165, 233, 0.4);">
+          🖨️ Print Report
+        </button>
+
         <!-- Sheet Cleanup Action -->
         <button class="btn btn-secondary" id="btnCleanupTabs"
           title="Clean legacy columns in Master_Patients and format headers (preserves all tabs)"
@@ -1892,7 +2325,7 @@
         </div>
         <div class="stat-info">
           <div class="stat-value" id="statPatientCount">0</div>
-          <div class="stat-label">Unique Patients Registered</div>
+          <div class="stat-label">Patients Registered</div>
         </div>
       </div>
 
@@ -1939,11 +2372,21 @@
             <span>CSPMAP</span>
             <span class="source-filter-count" id="countSourceCSPMAP">0</span>
           </button>
-          <button type="button" class="source-filter-pill" id="filterSourceOutside" onclick="setSourceFilter('Outside Purchase')">
+          <button type="button" class="source-filter-pill" id="filterSourceOutside"
+            onclick="setSourceFilter('Outside Purchase')">
             <span>Outside Purchase</span>
             <span class="source-filter-count" id="countSourceOutside">0</span>
           </button>
+          <button type="button" class="source-filter-pill" id="filterSourceTargeted"
+            onclick="setSourceFilter('TARGETED')">
+            <span>🎯 Targeted Therapy</span>
+            <span class="source-filter-count" id="countSourceTargeted">0</span>
+          </button>
         </div>
+        <button class="btn btn-secondary" onclick="openReportModal(true)"
+          title="Open Printable / Save-as-PDF Report with current filters">
+          🖨️ Print / PDF Report
+        </button>
         <button class="btn btn-primary" onclick="openPatientModal()">
           + Register Patient Treatment
         </button>
@@ -2138,7 +2581,7 @@
               <div class="custom-select-panel" id="medDropdownPanel">
                 <div class="dropdown-search-wrapper">
                   <input type="text" id="medSearchInput" class="dropdown-search-input"
-                    placeholder="Type to search unique medicines..." autocomplete="off"
+                    placeholder="Type to search medicines..." autocomplete="off"
                     oninput="filterMedDropdown(this.value)">
                 </div>
                 <div class="custom-select-options" id="medOptionsList">
@@ -2178,6 +2621,18 @@
               placeholder="e.g. Herceptin, Velcade, Taxol, Keytruda, Vidaza" required>
             <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
               Prescribed or dispensed commercial/innovator brand name (Required).
+            </small>
+          </div>
+
+          <!-- Targeted Therapy Classification Checkbox (Directly below Brand Name) -->
+          <div class="form-group" id="targetedTherapyGroup">
+            <label class="source-checkbox-card" id="cardTargetedTherapy" style="width: 100%;">
+              <input type="checkbox" id="formTargetedTherapy" value="Targeted Therapy"
+                onchange="toggleTargetedTherapyCard(this)">
+              <span class="source-checkbox-label">Targeted Therapy</span>
+            </label>
+            <small style="color: var(--text-dim); font-size: 11px; margin-top: 5px; display: block;">
+              Check this box if the prescribed medication is a Targeted Therapy (e.g., Trastuzumab, Bevacizumab, Bortezomib, Rituximab, Pembrolizumab) for future report filtering.
             </small>
           </div>
 
@@ -2301,7 +2756,7 @@
             <thead>
               <tr>
                 <th style="width: 50px;">#</th>
-                <th>Medicine Description (Unique Formulary)</th>
+                <th>Medicine Description (Formulary)</th>
                 <th style="width: 120px; text-align: right;">Action</th>
               </tr>
             </thead>
@@ -2379,6 +2834,108 @@
     </div>
   </div>
 
+  <!-- 5. Printable & Save-as-PDF Report Builder Modal -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-card">
+      <div class="modal-header no-print" style="padding: 14px 22px;">
+        <div>
+          <h2>📊 Pharmacy Chemotherapy Compounding Report Builder</h2>
+          <div style="font-size: 12px; color: var(--text-dim); margin-top: 2px;">
+            Filter by Patient Name, Funding Source, Targeted Therapy, Per Medicine Compounded, or Date Range &bull; Print or Save as PDF
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeReportModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 14px 22px;">
+        <!-- Interactive Report Filter Toolbar (Hidden when printing) -->
+        <div class="report-filter-toolbar no-print">
+          <div class="report-filter-grid">
+            <div class="report-filter-item">
+              <label for="reportFilterViewMode">Report View / Layout</label>
+              <select id="reportFilterViewMode" class="report-filter-select" onchange="renderPrintableReport()">
+                <option value="ALL">Complete Report (Medicine Summary + Patient Log)</option>
+                <option value="MEDICINE_SUMMARY">Per Medicine Used / Compounded Summary Only</option>
+                <option value="PATIENT_LOG">Detailed Patient Compounding Log Only</option>
+              </select>
+            </div>
+
+            <div class="report-filter-item">
+              <label for="reportFilterPatient">Patient Name</label>
+              <select id="reportFilterPatient" class="report-filter-select" onchange="renderPrintableReport()">
+                <option value="ALL">All Patients</option>
+              </select>
+            </div>
+
+            <div class="report-filter-item">
+              <label for="reportFilterSource">Funding Source</label>
+              <select id="reportFilterSource" class="report-filter-select" onchange="renderPrintableReport()">
+                <option value="ALL">All Sources (CAF / CSPMAP / Outside)</option>
+                <option value="CAF">CAF Only</option>
+                <option value="CSPMAP">CSPMAP Only</option>
+                <option value="Outside Purchase">Outside Purchase Only</option>
+                <option value="UNSPECIFIED">Unspecified (--)</option>
+              </select>
+            </div>
+
+            <div class="report-filter-item">
+              <label for="reportFilterTargeted">Targeted Therapy Filter</label>
+              <select id="reportFilterTargeted" class="report-filter-select" onchange="renderPrintableReport()">
+                <option value="ALL">All Therapies (Targeted &amp; Standard Chemo)</option>
+                <option value="TARGETED">🎯 Targeted Therapy Only</option>
+                <option value="NON_TARGETED">Standard Chemotherapy Only (Non-Targeted)</option>
+              </select>
+            </div>
+
+            <div class="report-filter-item">
+              <label for="reportFilterMedicine">Per Medicine Used / Compounded</label>
+              <select id="reportFilterMedicine" class="report-filter-select" onchange="renderPrintableReport()">
+                <option value="ALL">All Compounded Medicines</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 6px; border-top: 1px dashed var(--border-color);">
+            <div style="display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;">
+              <div class="report-filter-item" style="width: 165px;">
+                <label for="reportFilterDateFrom">Schedule Date From</label>
+                <input type="text" id="reportFilterDateFrom" class="report-filter-input" placeholder="MM/DD/YYYY"
+                  autocomplete="off" onchange="renderPrintableReport()">
+              </div>
+              <div class="report-filter-item" style="width: 165px;">
+                <label for="reportFilterDateTo">Schedule Date To</label>
+                <input type="text" id="reportFilterDateTo" class="report-filter-input" placeholder="MM/DD/YYYY"
+                  autocomplete="off" onchange="renderPrintableReport()">
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetReportFilters()" style="padding: 8px 14px; font-size: 12px;">
+                Reset
+              </button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 11.5px; color: var(--text-dim);">
+                💡 Tip: In Print Preview, choose <strong>"Save as PDF"</strong> or <strong>"Microsoft Print to PDF"</strong> to save as PDF.
+              </span>
+              <button type="button" class="btn btn-primary" onclick="triggerPrintReport()" style="padding: 9px 18px; font-size: 13px;">
+                🖨️ Print / Save as PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Printable White Paper Document Area -->
+        <div class="printable-report-sheet" id="printableReportArea">
+          <!-- Populated dynamically by renderPrintableReport() -->
+        </div>
+      </div>
+      <div class="modal-footer no-print">
+        <button type="button" class="btn btn-secondary" onclick="closeReportModal()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="triggerPrintReport()">
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
@@ -2441,6 +2998,8 @@
 
     let fpScheduleDate = null;
     let fpExpiryDate = null;
+    let fpReportDateFrom = null;
+    let fpReportDateTo = null;
 
     function initFlatpickr() {
       if (typeof flatpickr === 'undefined') return;
@@ -2457,6 +3016,22 @@
         allowInput: true,
         clickOpens: true,
         disableMobile: false
+      });
+
+      fpReportDateFrom = flatpickr('#reportFilterDateFrom', {
+        dateFormat: 'm/d/Y',
+        allowInput: true,
+        clickOpens: true,
+        disableMobile: false,
+        onChange: () => renderPrintableReport()
+      });
+
+      fpReportDateTo = flatpickr('#reportFilterDateTo', {
+        dateFormat: 'm/d/Y',
+        allowInput: true,
+        clickOpens: true,
+        disableMobile: false,
+        onChange: () => renderPrintableReport()
       });
     }
 
@@ -2637,20 +3212,23 @@
       if (oncoCountEl) oncoCountEl.textContent = state.medicines.length;
       if (allCountEl) allCountEl.textContent = state.allHospitalMedicines.length || state.medicines.length;
 
-      // Update Funding Source filter pill counts
+      // Update Funding Source & Targeted Therapy filter pill counts
       const countAll = state.patients.length;
       const countCAF = state.patients.filter(p => (p.source || '').trim().toUpperCase() === 'CAF').length;
       const countCSPMAP = state.patients.filter(p => (p.source || '').trim().toUpperCase() === 'CSPMAP').length;
       const countOutside = state.patients.filter(p => (p.source || '').trim().toLowerCase() === 'outside purchase').length;
+      const countTargeted = state.patients.filter(p => Boolean((p.targetedTherapy || '').trim())).length;
 
       const elAll = document.getElementById('countSourceAll');
       const elCAF = document.getElementById('countSourceCAF');
       const elCSPMAP = document.getElementById('countSourceCSPMAP');
       const elOutside = document.getElementById('countSourceOutside');
+      const elTargeted = document.getElementById('countSourceTargeted');
       if (elAll) elAll.textContent = countAll;
       if (elCAF) elCAF.textContent = countCAF;
       if (elCSPMAP) elCSPMAP.textContent = countCSPMAP;
       if (elOutside) elOutside.textContent = countOutside;
+      if (elTargeted) elTargeted.textContent = countTargeted;
     }
 
     function setSourceFilter(filterVal) {
@@ -2659,7 +3237,8 @@
         'ALL': 'filterSourceAll',
         'CAF': 'filterSourceCAF',
         'CSPMAP': 'filterSourceCSPMAP',
-        'Outside Purchase': 'filterSourceOutside'
+        'Outside Purchase': 'filterSourceOutside',
+        'TARGETED': 'filterSourceTargeted'
       };
       Object.keys(pillMap).forEach(key => {
         const btn = document.getElementById(pillMap[key]);
@@ -2788,16 +3367,55 @@
       });
     }
 
+    function toggleTargetedTherapyCard(cb) {
+      if (!cb) return;
+      const card = document.getElementById('cardTargetedTherapy');
+      if (card) {
+        card.classList.toggle('checked', cb.checked);
+      }
+    }
+
+    function getTargetedTherapyValue() {
+      const cb = document.getElementById('formTargetedTherapy');
+      return cb && cb.checked ? 'Targeted Therapy' : '';
+    }
+
+    function setTargetedTherapyValue(val) {
+      const cb = document.getElementById('formTargetedTherapy');
+      const card = document.getElementById('cardTargetedTherapy');
+      const norm = String(val || '').trim().toLowerCase();
+      const isTargeted = norm === 'targeted therapy' || norm === 'yes' || norm === 'true';
+      if (cb) cb.checked = isTargeted;
+      if (card) card.classList.toggle('checked', isTargeted);
+    }
+
+    function renderBrandCell(brandVal, targetedVal) {
+      const hasBrand = Boolean((brandVal || '').trim());
+      const normTargeted = String(targetedVal || '').trim().toLowerCase();
+      const isTargeted = normTargeted === 'targeted therapy' || normTargeted === 'yes' || normTargeted === 'true';
+      if (!hasBrand && !isTargeted) {
+        return '<span style="color: var(--text-dim); font-size: 12px;">--</span>';
+      }
+      return `
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+          ${hasBrand ? `<span class="brand-pill">${escapeHtml(brandVal)}</span>` : ''}
+          ${isTargeted ? `<span class="targeted-badge">🎯 Targeted Therapy</span>` : ''}
+        </div>
+      `;
+    }
+
     function renderPatientsTable() {
       const tbody = elements.patientsTableBody;
       const q = state.filterQuery;
       const srcFilter = (state.sourceFilter || 'ALL').trim().toLowerCase();
       const sourceFilteredPatients = srcFilter === 'all'
         ? state.patients
-        : state.patients.filter(s => (s.source || '').trim().toLowerCase() === srcFilter);
+        : srcFilter === 'targeted'
+          ? state.patients.filter(s => Boolean((s.targetedTherapy || '').trim()))
+          : state.patients.filter(s => (s.source || '').trim().toLowerCase() === srcFilter);
       const allPatientGroups = groupPatientsWithSessions(sourceFilteredPatients);
 
-      // Filter groups: match patient name or ANY session fields (including Funding Source)
+      // Filter groups: match patient name or ANY session fields (including Funding Source & Targeted Therapy)
       const filtered = q
         ? allPatientGroups.filter(grp => {
           if (grp.name.toLowerCase().includes(q)) return true;
@@ -2810,7 +3428,8 @@
             (s.expiryDate && s.expiryDate.toLowerCase().includes(q)) ||
             (s.dosage && s.dosage.toLowerCase().includes(q)) ||
             (s.quantity && s.quantity.toLowerCase().includes(q)) ||
-            (s.source && s.source.toLowerCase().includes(q))
+            (s.source && s.source.toLowerCase().includes(q)) ||
+            (s.targetedTherapy && s.targetedTherapy.toLowerCase().includes(q))
           );
         })
         : allPatientGroups;
@@ -2878,7 +3497,7 @@
               ` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
             <td>
-              ${latest.brand ? `<span class="brand-pill">${escapeHtml(latest.brand)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
+              ${renderBrandCell(latest.brand, latest.targetedTherapy)}
             </td>
             <td>
               ${latest.dosage ? `<span class="dosage-pill">${escapeHtml(latest.dosage)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
@@ -2947,7 +3566,7 @@
                           <td><span class="schedule-badge" style="font-size: 11.5px;">📅 ${escapeHtml(formatDateMMDDYYYY(s.scheduleDate))}</span></td>
                           <td><div class="protocol-tag" style="font-size: 12px;">${escapeHtml(s.protocol || '--')}</div></td>
                           <td><span class="cycle-pill">Cycle #${s.medCycleNumber}</span></td>
-                          <td>${s.brand ? `<span class="brand-pill">${escapeHtml(s.brand)}</span>` : '--'}</td>
+                          <td>${renderBrandCell(s.brand, s.targetedTherapy)}</td>
                           <td>${s.dosage ? `<span class="dosage-pill">${escapeHtml(s.dosage)}</span>` : '--'}</td>
                           <td>${s.quantity ? `<span class="qty-pill">${escapeHtml(s.quantity)}</span>` : '--'}</td>
                           <td>${renderSourceBadge(s.source)}</td>
@@ -3148,6 +3767,7 @@
       document.getElementById('formDosage').value = item.dosage || '';
       document.getElementById('formQuantity').value = item.quantity || '';
       setSelectedSource(item.source || '');
+      setTargetedTherapyValue(item.targetedTherapy || '');
 
       const btnDeleteModal = document.getElementById('btnDeleteModalSession');
       if (btnDeleteModal) {
@@ -3185,6 +3805,7 @@
 
       // Clear all other input fields for the new session entry
       setSelectedSource('');
+      setTargetedTherapyValue('');
       clearMedSelection();
       disableCustomProtocol();
       document.getElementById('formBrand').value = '';
@@ -3220,7 +3841,7 @@
           <td><span class="schedule-badge">${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || '--')}</span></td>
           <td><div class="protocol-tag">${escapeHtml(s.protocol || '--')}</div></td>
           <td><span class="cycle-pill">Cycle #${s.medCycleNumber}</span></td>
-          <td>${s.brand ? `<span class="brand-pill">${escapeHtml(s.brand)}</span>` : '--'}</td>
+          <td>${renderBrandCell(s.brand, s.targetedTherapy)}</td>
           <td>${s.dosage ? `<span class="dosage-pill">${escapeHtml(s.dosage)}</span>` : '--'}</td>
           <td>${s.quantity ? `<span class="qty-pill">${escapeHtml(s.quantity)}</span>` : '--'}</td>
           <td>${renderSourceBadge(s.source)}</td>
@@ -3252,6 +3873,471 @@
     }
 
     // ==========================================
+    // PRINTABLE & SAVE-AS-PDF REPORT BUILDER
+    // ==========================================
+
+    function isSessionTargetedTherapy(s) {
+      const norm = String((s && s.targetedTherapy) || '').trim().toLowerCase();
+      return norm === 'targeted therapy' || norm === 'yes' || norm === 'true';
+    }
+
+    function parseNumericQuantity(qtyVal) {
+      if (qtyVal === null || qtyVal === undefined) return 0;
+      const m = String(qtyVal).trim().match(/(\d+(\.\d+)?)/);
+      return m ? parseFloat(m[1]) : 0;
+    }
+
+    function openReportModal(syncActiveDashboardFilter = false) {
+      populateReportFilterDropdowns();
+
+      if (syncActiveDashboardFilter) {
+        const activeFilter = (state.sourceFilter || 'ALL').trim();
+        const srcSelect = document.getElementById('reportFilterSource');
+        const tgtSelect = document.getElementById('reportFilterTargeted');
+        if (activeFilter === 'TARGETED') {
+          if (srcSelect) srcSelect.value = 'ALL';
+          if (tgtSelect) tgtSelect.value = 'TARGETED';
+        } else if (activeFilter === 'CAF' || activeFilter === 'CSPMAP' || activeFilter === 'Outside Purchase') {
+          if (srcSelect) srcSelect.value = activeFilter;
+          if (tgtSelect) tgtSelect.value = 'ALL';
+        }
+      }
+
+      renderPrintableReport();
+      const modal = document.getElementById('reportModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeReportModal() {
+      const modal = document.getElementById('reportModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function resetReportFilters() {
+      const viewMode = document.getElementById('reportFilterViewMode');
+      const patSelect = document.getElementById('reportFilterPatient');
+      const srcSelect = document.getElementById('reportFilterSource');
+      const tgtSelect = document.getElementById('reportFilterTargeted');
+      const medSelect = document.getElementById('reportFilterMedicine');
+      const fromInput = document.getElementById('reportFilterDateFrom');
+      const toInput = document.getElementById('reportFilterDateTo');
+
+      if (viewMode) viewMode.value = 'ALL';
+      if (patSelect) patSelect.value = 'ALL';
+      if (srcSelect) srcSelect.value = 'ALL';
+      if (tgtSelect) tgtSelect.value = 'ALL';
+      if (medSelect) medSelect.value = 'ALL';
+      if (fromInput) fromInput.value = '';
+      if (toInput) toInput.value = '';
+      if (fpReportDateFrom) fpReportDateFrom.clear();
+      if (fpReportDateTo) fpReportDateTo.clear();
+
+      renderPrintableReport();
+    }
+
+    function populateReportFilterDropdowns() {
+      const patSelect = document.getElementById('reportFilterPatient');
+      const medSelect = document.getElementById('reportFilterMedicine');
+      if (!patSelect || !medSelect) return;
+
+      const prevPatient = patSelect.value || 'ALL';
+      const prevMed = medSelect.value || 'ALL';
+
+      // Unique Patient Names with session counts
+      const patCounts = new Map();
+      state.patients.forEach(s => {
+        const name = (s.name || '').trim();
+        if (!name) return;
+        const key = name.toUpperCase();
+        if (!patCounts.has(key)) {
+          patCounts.set(key, { label: name, count: 0 });
+        }
+        patCounts.get(key).count += 1;
+      });
+      const sortedPatients = Array.from(patCounts.values()).sort((a, b) => a.label.localeCompare(b.label));
+
+      patSelect.innerHTML = `<option value="ALL">All Patients (${sortedPatients.length})</option>` +
+        sortedPatients.map(p => `<option value="${escapeHtml(p.label)}">${escapeHtml(p.label)} (${p.count} compound${p.count > 1 ? 's' : ''})</option>`).join('');
+
+      if (sortedPatients.some(p => p.label === prevPatient)) {
+        patSelect.value = prevPatient;
+      }
+
+      // Unique Compounded Medicines with counts
+      const medCounts = new Map();
+      state.patients.forEach(s => {
+        const proto = (s.protocol || '').trim();
+        if (!proto) return;
+        const key = proto.toUpperCase();
+        if (!medCounts.has(key)) {
+          medCounts.set(key, { label: proto, count: 0 });
+        }
+        medCounts.get(key).count += 1;
+      });
+      const sortedMeds = Array.from(medCounts.values()).sort((a, b) => a.label.localeCompare(b.label));
+
+      medSelect.innerHTML = `<option value="ALL">All Compounded Medicines (${sortedMeds.length})</option>` +
+        sortedMeds.map(m => `<option value="${escapeHtml(m.label)}">${escapeHtml(m.label)} (${m.count})</option>`).join('');
+
+      if (sortedMeds.some(m => m.label === prevMed)) {
+        medSelect.value = prevMed;
+      }
+    }
+
+    function getAnnotatedAllPatientSessions() {
+      // Annotate compoundNumber and medCycleNumber per patient chronologically
+      const groups = groupPatientsWithSessions(state.patients);
+      const flat = [];
+      groups.forEach(grp => {
+        grp.sessions.forEach(s => {
+          flat.push(s);
+        });
+      });
+      // Sort overall list by schedule date descending, then patient name
+      flat.sort((a, b) => {
+        const diff = parseDateToTimestamp(b.scheduleDate) - parseDateToTimestamp(a.scheduleDate);
+        if (diff !== 0) return diff;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+      return flat;
+    }
+
+    function renderPrintableReport() {
+      const container = document.getElementById('printableReportArea');
+      if (!container) return;
+
+      // Capture existing user-typed signatory names if already edited in preview
+      const existingSig1 = document.getElementById('sigNamePrepared')?.textContent || '';
+      const existingSig2 = document.getElementById('sigNameVerified')?.textContent || '';
+      const existingSig3 = document.getElementById('sigNameAcknowledged')?.textContent || '';
+
+      const viewMode = document.getElementById('reportFilterViewMode')?.value || 'ALL';
+      const patientFilter = document.getElementById('reportFilterPatient')?.value || 'ALL';
+      const sourceFilter = document.getElementById('reportFilterSource')?.value || 'ALL';
+      const targetedFilter = document.getElementById('reportFilterTargeted')?.value || 'ALL';
+      const medicineFilter = document.getElementById('reportFilterMedicine')?.value || 'ALL';
+      const dateFromStr = (document.getElementById('reportFilterDateFrom')?.value || '').trim();
+      const dateToStr = (document.getElementById('reportFilterDateTo')?.value || '').trim();
+
+      const fromTs = dateFromStr ? parseDateToTimestamp(dateFromStr) : 0;
+      const toTs = dateToStr ? (parseDateToTimestamp(dateToStr) + 86399999) : 0;
+
+      const allSessions = getAnnotatedAllPatientSessions();
+
+      const filteredSessions = allSessions.filter(s => {
+        if (patientFilter !== 'ALL') {
+          if ((s.name || '').trim().toLowerCase() !== patientFilter.trim().toLowerCase()) return false;
+        }
+        if (sourceFilter !== 'ALL') {
+          const rawSrc = (s.source || '').trim();
+          if (sourceFilter === 'UNSPECIFIED') {
+            if (rawSrc !== '') return false;
+          } else if (rawSrc.toLowerCase() !== sourceFilter.trim().toLowerCase()) {
+            return false;
+          }
+        }
+        if (targetedFilter !== 'ALL') {
+          const isTgt = isSessionTargetedTherapy(s);
+          if (targetedFilter === 'TARGETED' && !isTgt) return false;
+          if (targetedFilter === 'NON_TARGETED' && isTgt) return false;
+        }
+        if (medicineFilter !== 'ALL') {
+          if ((s.protocol || '').trim().toLowerCase() !== medicineFilter.trim().toLowerCase()) return false;
+        }
+        if (fromTs > 0 || toTs > 0) {
+          const sTs = parseDateToTimestamp(s.scheduleDate);
+          if (!sTs) return false;
+          if (fromTs > 0 && sTs < fromTs) return false;
+          if (toTs > 0 && sTs > toTs) return false;
+        }
+        return true;
+      });
+
+      // Compute KPIs
+      const totalCompounds = filteredSessions.length;
+      const uniquePatientsSet = new Set(filteredSessions.map(s => (s.name || '').trim().toUpperCase()).filter(Boolean));
+      const uniqueMedsSet = new Set(filteredSessions.map(s => (s.protocol || '').trim().toUpperCase()).filter(Boolean));
+      let totalNumericUnits = 0;
+      let targetedCount = 0;
+      let cafCount = 0;
+      let cspmapCount = 0;
+      let outsideCount = 0;
+
+      // Group Per Medicine Used / Compounded Summary
+      const medSummaryMap = new Map();
+
+      filteredSessions.forEach(s => {
+        const qtyNum = parseNumericQuantity(s.quantity);
+        totalNumericUnits += qtyNum;
+
+        const isTgt = isSessionTargetedTherapy(s);
+        if (isTgt) targetedCount += 1;
+
+        const srcUpper = (s.source || '').trim().toUpperCase();
+        if (srcUpper === 'CAF') cafCount += 1;
+        else if (srcUpper === 'CSPMAP') cspmapCount += 1;
+        else if ((s.source || '').trim().toLowerCase() === 'outside purchase') outsideCount += 1;
+
+        const medName = (s.protocol || 'Unspecified Protocol').trim();
+        const medKey = medName.toUpperCase();
+        if (!medSummaryMap.has(medKey)) {
+          medSummaryMap.set(medKey, {
+            protocol: medName,
+            brands: new Set(),
+            patients: new Set(),
+            compoundsCount: 0,
+            totalQtyNumeric: 0,
+            targetedCount: 0,
+            caf: 0,
+            cspmap: 0,
+            outside: 0,
+            unspecified: 0
+          });
+        }
+        const entry = medSummaryMap.get(medKey);
+        entry.compoundsCount += 1;
+        entry.totalQtyNumeric += qtyNum;
+        if (s.brand && s.brand.trim()) entry.brands.add(s.brand.trim().toUpperCase());
+        if (s.name && s.name.trim()) entry.patients.add(s.name.trim().toUpperCase());
+        if (isTgt) entry.targetedCount += 1;
+        if (srcUpper === 'CAF') entry.caf += 1;
+        else if (srcUpper === 'CSPMAP') entry.cspmap += 1;
+        else if ((s.source || '').trim().toLowerCase() === 'outside purchase') entry.outside += 1;
+        else entry.unspecified += 1;
+      });
+
+      const medSummaryRows = Array.from(medSummaryMap.values()).sort((a, b) => {
+        if (b.compoundsCount !== a.compoundsCount) return b.compoundsCount - a.compoundsCount;
+        return a.protocol.localeCompare(b.protocol);
+      });
+
+      const nowStr = new Date().toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const logoImgSrc = document.querySelector('.brand-icon img')?.getAttribute('src') || '';
+
+      const datePeriodLabel = (dateFromStr || dateToStr)
+        ? `${dateFromStr || 'Start'} to ${dateToStr || 'Present'}`
+        : 'All Recorded Dates';
+
+      const targetedLabel = targetedFilter === 'TARGETED'
+        ? 'Targeted Therapy Only'
+        : targetedFilter === 'NON_TARGETED'
+          ? 'Standard Chemo Only'
+          : 'All Therapies';
+
+      container.innerHTML = `
+        <div class="print-doc-topbar">
+          <div class="print-doc-institution">
+            ${logoImgSrc ? `<img src="${logoImgSrc}" alt="ARMMC Seal">` : ''}
+            <div>
+              <h1>Amang Rodriguez Memorial Medical Center</h1>
+              <div class="print-doc-dept">Pharmacy Chemotherapy Compounding Log — Official Report</div>
+              <div class="print-doc-sub">Sumulong Highway, Sto. Niño, Marikina City &bull; Oncology / Cancer Compounding Unit</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 800; color: #0f172a; font-size: 12px;">Pharmacy Chemotherapy Compounding Log - ARMMC Pharmacy</div>
+            <div>Generated: <strong>${escapeHtml(nowStr)}</strong></div>
+            <div>Total Matching Records: <strong>${totalCompounds} Compound${totalCompounds === 1 ? '' : 's'}</strong></div>
+          </div>
+        </div>
+
+        <div class="print-meta-strip">
+          <div class="print-meta-item"><strong>Patient Filter:</strong> ${escapeHtml(patientFilter === 'ALL' ? 'All Patients' : patientFilter)}</div>
+          <div class="print-meta-item"><strong>Funding Source:</strong> ${escapeHtml(sourceFilter === 'ALL' ? 'All Sources' : sourceFilter)}</div>
+          <div class="print-meta-item"><strong>Therapy Classification:</strong> ${escapeHtml(targetedLabel)}</div>
+          <div class="print-meta-item"><strong>Medicine Filter:</strong> ${escapeHtml(medicineFilter === 'ALL' ? 'All Compounded Medicines' : medicineFilter)}</div>
+          <div class="print-meta-item"><strong>Schedule Period:</strong> ${escapeHtml(datePeriodLabel)}</div>
+        </div>
+
+        <div class="print-kpi-grid">
+          <div class="print-kpi-box">
+            <div class="kpi-val">${totalCompounds}</div>
+            <div class="kpi-lbl">Total Compounds Prepared</div>
+          </div>
+          <div class="print-kpi-box">
+            <div class="kpi-val">${uniquePatientsSet.size}</div>
+            <div class="kpi-lbl">Patients Served</div>
+          </div>
+          <div class="print-kpi-box">
+            <div class="kpi-val">${uniqueMedsSet.size}</div>
+            <div class="kpi-lbl">Medicines Used</div>
+          </div>
+          <div class="print-kpi-box">
+            <div class="kpi-val">${totalNumericUnits}</div>
+            <div class="kpi-lbl">Total Units / Vials Used</div>
+          </div>
+          <div class="print-kpi-box">
+            <div class="kpi-val" style="font-size: 13px; padding-top: 3px;">
+              CAF: ${cafCount} | CSPMAP: ${cspmapCount} | Out: ${outsideCount}
+            </div>
+            <div class="kpi-lbl">Targeted Therapy: ${targetedCount} Compound${targetedCount === 1 ? '' : 's'}</div>
+          </div>
+        </div>
+
+        ${(viewMode === 'ALL' || viewMode === 'MEDICINE_SUMMARY') ? `
+          <div class="print-section-heading">
+            <span>I. Per Medicine Used / Compounded Utilization Summary</span>
+            <span style="font-size: 10.5px; font-weight: 600; color: #475569;">${medSummaryRows.length} Medicine Protocol${medSummaryRows.length === 1 ? '' : 's'}</span>
+          </div>
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th style="width: 34px; text-align: center;">#</th>
+                <th>Medicine / Chemo Protocol</th>
+                <th style="width: 150px;">Brand Name(s)</th>
+                <th style="width: 120px;">Therapy Classification</th>
+                <th style="width: 90px; text-align: center;">Compounds</th>
+                <th style="width: 90px; text-align: center;">Patients</th>
+                <th style="width: 105px; text-align: center;">Total Qty Used</th>
+                <th style="width: 195px;">Funding Source Breakdown</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${medSummaryRows.length === 0 ? `
+                <tr>
+                  <td colspan="8" style="text-align: center; padding: 18px; color: #64748b;">
+                    No compounded medicine records match the selected report filters.
+                  </td>
+                </tr>
+              ` : medSummaryRows.map((m, i) => {
+                const brandList = Array.from(m.brands).join(', ') || '--';
+                const therapyStatus = m.targetedCount > 0
+                  ? (m.targetedCount === m.compoundsCount
+                    ? `<span class="print-pill-box targeted">TARGETED (${m.targetedCount})</span>`
+                    : `<span class="print-pill-box targeted">TARGETED (${m.targetedCount}/${m.compoundsCount})</span>`)
+                  : `<span style="color: #475569; font-size: 10.5px;">Standard Chemo</span>`;
+                const srcParts = [];
+                if (m.caf > 0) srcParts.push(`CAF: <strong>${m.caf}</strong>`);
+                if (m.cspmap > 0) srcParts.push(`CSPMAP: <strong>${m.cspmap}</strong>`);
+                if (m.outside > 0) srcParts.push(`Outside: <strong>${m.outside}</strong>`);
+                if (m.unspecified > 0) srcParts.push(`Unset: <strong>${m.unspecified}</strong>`);
+                return `
+                  <tr>
+                    <td style="text-align: center; font-weight: 700;">${i + 1}</td>
+                    <td style="font-weight: 700;">${escapeHtml(m.protocol)}</td>
+                    <td>${escapeHtml(brandList)}</td>
+                    <td>${therapyStatus}</td>
+                    <td style="text-align: center; font-weight: 800; font-family: 'JetBrains Mono', monospace;">${m.compoundsCount}</td>
+                    <td style="text-align: center; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${m.patients.size}</td>
+                    <td style="text-align: center; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #0284c7;">${m.totalQtyNumeric}</td>
+                    <td style="font-size: 10.5px;">${srcParts.join(' &bull; ') || '--'}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        ` : ''}
+
+        ${(viewMode === 'ALL' || viewMode === 'PATIENT_LOG') ? `
+          <div class="print-section-heading">
+            <span>${viewMode === 'ALL' ? 'II.' : 'I.'} Detailed Patient Chemotherapy Compounding Log</span>
+            <span style="font-size: 10.5px; font-weight: 600; color: #475569;">${filteredSessions.length} Compounding Session${filteredSessions.length === 1 ? '' : 's'}</span>
+          </div>
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th style="width: 32px; text-align: center;">#</th>
+                <th style="width: 82px;">Schedule Date</th>
+                <th style="width: 145px;">Patient Name</th>
+                <th style="width: 90px;">Diagnosis</th>
+                <th style="width: 105px;">Compound / Cycle</th>
+                <th>Chemo Protocol / Medicine</th>
+                <th style="width: 95px;">Brand Name</th>
+                <th style="width: 95px;">Therapy Type</th>
+                <th style="width: 72px;">Dosage</th>
+                <th style="width: 52px; text-align: center;">Qty</th>
+                <th style="width: 88px;">Source</th>
+                <th style="width: 125px;">Lot # / Expiry</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredSessions.length === 0 ? `
+                <tr>
+                  <td colspan="12" style="text-align: center; padding: 20px; color: #64748b;">
+                    No patient compounding records match the selected filters.
+                  </td>
+                </tr>
+              ` : filteredSessions.map((s, idx) => {
+                const isTgt = isSessionTargetedTherapy(s);
+                const lotExpParts = [];
+                if (s.lotNumber) lotExpParts.push(`Lot: ${escapeHtml(s.lotNumber)}`);
+                if (s.expiryDate) lotExpParts.push(`Exp: ${escapeHtml(formatDateMMDDYYYY(s.expiryDate))}`);
+                return `
+                  <tr>
+                    <td style="text-align: center; font-weight: 700;">${idx + 1}</td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || '-')}</td>
+                    <td style="font-weight: 800; text-transform: uppercase;">${escapeHtml(s.name || '-')}</td>
+                    <td style="font-weight: 700;">${escapeHtml(s.diagnosis || '-')}</td>
+                    <td style="font-size: 10.5px; font-weight: 700;">
+                      Compound #${s.compoundNumber || 1}<br>
+                      <span style="color: #475569; font-weight: 600;">Cycle #${s.medCycleNumber || 1}</span>
+                    </td>
+                    <td style="font-weight: 700;">${escapeHtml(s.protocol || '-')}</td>
+                    <td style="font-weight: 700; text-transform: uppercase;">${escapeHtml(s.brand || '-')}</td>
+                    <td>
+                      ${isTgt
+                        ? `<span class="print-pill-box targeted">TARGETED</span>`
+                        : `<span style="color: #475569; font-size: 10px;">Standard</span>`}
+                    </td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">${escapeHtml(s.dosage || '-')}</td>
+                    <td style="text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 800;">${escapeHtml(s.quantity || '-')}</td>
+                    <td>
+                      ${s.source
+                        ? `<span class="print-pill-box">${escapeHtml(s.source)}</span>`
+                        : `<span style="color: #94a3b8;">-</span>`}
+                    </td>
+                    <td style="font-size: 10px; font-family: 'JetBrains Mono', monospace; line-height: 1.35;">
+                      ${lotExpParts.join('<br>') || '-'}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        ` : ''}
+
+        <!-- 3-Column Signatory Footer (Prepared By, Verified & Approved By, Acknowledged By) -->
+        <div class="print-signatory-footer">
+          <div class="print-signatory-col">
+            <div class="print-signatory-name-input" id="sigNamePrepared" contenteditable="true"
+              data-placeholder="(Click to type name if needed)">${escapeHtml(existingSig1)}</div>
+            <div class="print-signatory-line">Prepared By</div>
+            <div class="print-signatory-role">Pharmacist on Duty / Custodian</div>
+          </div>
+
+          <div class="print-signatory-col">
+            <div class="print-signatory-name-input" id="sigNameVerified" contenteditable="true"
+              data-placeholder="(Click to type name if needed)">${escapeHtml(existingSig2)}</div>
+            <div class="print-signatory-line">Verified &amp; Approved By</div>
+            <div class="print-signatory-role">Chief Pharmacist / Authorized Head</div>
+          </div>
+
+          <div class="print-signatory-col">
+            <div class="print-signatory-name-input" id="sigNameAcknowledged" contenteditable="true"
+              data-placeholder="(Click to type name if needed)">${escapeHtml(existingSig3)}</div>
+            <div class="print-signatory-line">Acknowledged By</div>
+            <div class="print-signatory-role">Facility Representative</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function triggerPrintReport() {
+      const modal = document.getElementById('reportModal');
+      if (modal && !modal.classList.contains('active')) {
+        openReportModal(true);
+      }
+      window.print();
+    }
+
+    // ==========================================
     // PATIENT CRUD MODAL
     // ==========================================
 
@@ -3263,6 +4349,7 @@
       setDateInputValue('formScheduleDate', getTodayMMDDYYYY());
       setDateInputValue('formExpiryDate', '');
       setSelectedSource('');
+      setTargetedTherapyValue('');
       clearMedSelection();
       disableCustomProtocol();
 
@@ -3312,7 +4399,8 @@
         expiryDate: formatDateMMDDYYYY(document.getElementById('formExpiryDate').value.trim()),
         dosage: document.getElementById('formDosage').value.trim(),
         quantity: document.getElementById('formQuantity').value.trim(),
-        source: getSelectedSource()
+        source: getSelectedSource(),
+        targetedTherapy: getTargetedTherapyValue()
       };
 
       if (!payload.name) {
@@ -3909,6 +4997,7 @@
           scheduleDate: '10/20/2026',
           protocol: 'BORTEZOMIB 3.5MG VIAL',
           brand: 'Velcade',
+          targetedTherapy: 'Targeted Therapy',
           lotNumber: 'LOT-99210-A',
           expiryDate: '12/31/2027',
           dosage: '1.3 mg/m²',
@@ -4077,6 +5166,7 @@
           scheduleDate: '10/20/2026',
           protocol: 'TRASTUZUMAB 600MG/5ML (120MG/ML) SOLUTION FOR INJECTION, 5ML VIAL',
           brand: 'herceptin',
+          targetedTherapy: 'Targeted Therapy',
           lotNumber: 'LOT-77312-H',
           expiryDate: '05/31/2027',
           dosage: '600 mg',

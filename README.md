@@ -17,6 +17,8 @@ A modern, responsive Google Apps Script Single-Page Application (SPA) designed f
   * **Dosage**: Prescribed clinical dosage (e.g. `440 mg`, `1.3 mg/m²`).
   * **Quantity Required**: Physical units needed for pharmacy dispensing (e.g. `2 Vials`, `1 Box`).
   * **Funding / Acquisition Source**: Single-checkbox selection per session (**`CAF`**, **`CSPMAP`**, or **`Outside Purchase`**) for clean reporting and filtering.
+  * **Targeted Therapy Classification**: Dedicated **`Targeted Therapy`** checkbox directly below **Brand Name** (stored in the `Targeted Therapy` column of `Master_Patients`) with a 1-click **`🎯 Targeted Therapy`** filter pill for report building.
+  * **Printable & Save-as-PDF Report Builder (`🖨️ Print Report`)**: Multi-criteria report generator with filters for **Patient Name**, **Funding Source** (`CAF`, `CSPMAP`, `Outside Purchase`), **Targeted Therapy**, **Per Medicine Used / Compounded**, and **Schedule Date Range**, complete with a **Per-Medicine Compounded Utilization Summary**, **Detailed Patient Compounding Log**, and the official 3-column **ARMMC Signatory Footer** (`Prepared By`, `Verified & Approved By`, `Acknowledged By`).
   * **Lot Number**: Manufacturer batch identification.
   * **Expiry Date**: Medication expiration date with interactive date picker.
 
