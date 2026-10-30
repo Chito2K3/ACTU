@@ -2397,8 +2397,9 @@
             <th style="width: 140px;">Diagnosis</th>
             <th style="width: 135px;">Therapy Schedule</th>
             <th>Chemo Protocol</th>
-            <th style="width: 120px;">Brand Name</th>
-            <th style="width: 110px;">Dosage</th>
+            <th style="width: 115px;">Brand Name</th>
+            <th style="width: 130px;">Therapy Type</th>
+            <th style="width: 105px;">Dosage</th>
             <th style="width: 100px;">Quantity</th>
             <th style="width: 135px;">Source</th>
             <th style="width: 155px;">Lot # / Expiry</th>
@@ -2662,20 +2663,18 @@
           <!-- Dosage & Quantity Required (Separated Row) -->
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Dosage <span class="req">*</span></label>
-              <input type="text" id="formDosage" class="form-input" placeholder="e.g. 440mg, 1.3mg/m², 1000ml IV"
-                required>
+              <label class="form-label">Dosage</label>
+              <input type="text" id="formDosage" class="form-input" placeholder="e.g. 440mg, 1.3mg/m², 1000ml IV">
               <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
-                Clinical dosage prescribed for patient.
+                Clinical dosage prescribed for patient (can be added or edited later).
               </small>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Quantity Required <span class="req">*</span></label>
-              <input type="text" id="formQuantity" class="form-input" placeholder="e.g. 2 Vials, 1 Box, 3 Tabs"
-                required>
+              <label class="form-label">Quantity Required</label>
+              <input type="text" id="formQuantity" class="form-input" placeholder="e.g. 2 Vials, 1 Box, 3 Tabs">
               <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
-                Physical units needed for dispensing / pharmacy prep.
+                Physical units needed for dispensing / pharmacy prep (can be added or edited later).
               </small>
             </div>
           </div>
@@ -2809,6 +2808,7 @@
                 <th>Chemo Protocol</th>
                 <th style="width: 85px;">Cycle</th>
                 <th style="width: 105px;">Brand</th>
+                <th style="width: 125px;">Therapy Type</th>
                 <th style="width: 95px;">Dosage</th>
                 <th style="width: 85px;">Quantity</th>
                 <th style="width: 120px;">Source</th>
@@ -3383,19 +3383,21 @@
       if (card) card.classList.toggle('checked', isTargeted);
     }
 
-    function renderBrandCell(brandVal, targetedVal) {
+    function renderBrandCell(brandVal) {
       const hasBrand = Boolean((brandVal || '').trim());
-      const normTargeted = String(targetedVal || '').trim().toLowerCase();
-      const isTargeted = normTargeted === 'targeted therapy' || normTargeted === 'yes' || normTargeted === 'true';
-      if (!hasBrand && !isTargeted) {
+      if (!hasBrand) {
         return '<span style="color: var(--text-dim); font-size: 12px;">--</span>';
       }
-      return `
-        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
-          ${hasBrand ? `<span class="brand-pill">${escapeHtml(brandVal)}</span>` : ''}
-          ${isTargeted ? `<span class="targeted-badge">🎯 Targeted Therapy</span>` : ''}
-        </div>
-      `;
+      return `<span class="brand-pill">${escapeHtml(brandVal)}</span>`;
+    }
+
+    function renderTherapyTypeCell(targetedVal) {
+      const normTargeted = String(targetedVal || '').trim().toLowerCase();
+      const isTargeted = normTargeted === 'targeted therapy' || normTargeted === 'yes' || normTargeted === 'true';
+      if (isTargeted) {
+        return `<span class="targeted-badge">🎯 Targeted Therapy</span>`;
+      }
+      return '<span style="color: var(--text-dim); font-size: 11.5px;">Standard</span>';
     }
 
     function renderPatientsTable() {
@@ -3434,7 +3436,7 @@
           : 'No patients registered yet. Click "+ Register Treatment" to start.';
         tbody.innerHTML = `
           <tr>
-            <td colspan="11" style="text-align: center; padding: 40px; color: var(--text-dim);">
+            <td colspan="12" style="text-align: center; padding: 40px; color: var(--text-dim);">
               ${emptyMsg}
             </td>
           </tr>
@@ -3491,7 +3493,10 @@
               ` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
             <td>
-              ${renderBrandCell(latest.brand, latest.targetedTherapy)}
+              ${renderBrandCell(latest.brand)}
+            </td>
+            <td>
+              ${renderTherapyTypeCell(latest.targetedTherapy)}
             </td>
             <td>
               ${latest.dosage ? `<span class="dosage-pill">${escapeHtml(latest.dosage)}</span>` : '<span style="color: var(--text-dim); font-size: 12px;">--</span>'}
@@ -3527,7 +3532,7 @@
 
           ${grp.totalCompounds > 1 ? `
             <tr class="drawer-row" id="drawer-row-${idx}" style="display: none;">
-              <td colspan="11" style="padding: 0; background: rgba(14, 165, 233, 0.03); border-bottom: 1px solid var(--border-color);">
+              <td colspan="12" style="padding: 0; background: rgba(14, 165, 233, 0.03); border-bottom: 1px solid var(--border-color);">
                 <div class="drawer-content">
                   <div class="drawer-header">
                     <div>
@@ -3541,16 +3546,17 @@
                   <table class="subtable">
                     <thead>
                       <tr>
-                        <th style="width: 120px;">Compound</th>
-                        <th style="width: 125px;">Schedule Date</th>
+                        <th style="width: 115px;">Compound</th>
+                        <th style="width: 120px;">Schedule Date</th>
                         <th>Chemo Protocol</th>
-                        <th style="width: 100px;">Cycle</th>
-                        <th style="width: 115px;">Brand</th>
-                        <th style="width: 95px;">Dosage</th>
-                        <th style="width: 85px;">Quantity</th>
-                        <th style="width: 120px;">Source</th>
-                        <th style="width: 150px;">Lot # / Expiry</th>
-                        <th style="width: 80px; text-align: right;">Action</th>
+                        <th style="width: 95px;">Cycle</th>
+                        <th style="width: 110px;">Brand</th>
+                        <th style="width: 125px;">Therapy Type</th>
+                        <th style="width: 90px;">Dosage</th>
+                        <th style="width: 80px;">Quantity</th>
+                        <th style="width: 115px;">Source</th>
+                        <th style="width: 145px;">Lot # / Expiry</th>
+                        <th style="width: 75px; text-align: right;">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -3560,7 +3566,8 @@
                           <td><span class="schedule-badge" style="font-size: 11.5px;">📅 ${escapeHtml(formatDateMMDDYYYY(s.scheduleDate))}</span></td>
                           <td><div class="protocol-tag" style="font-size: 12px;">${escapeHtml(s.protocol || '--')}</div></td>
                           <td><span class="cycle-pill">Cycle #${s.medCycleNumber}</span></td>
-                          <td>${renderBrandCell(s.brand, s.targetedTherapy)}</td>
+                          <td>${renderBrandCell(s.brand)}</td>
+                          <td>${renderTherapyTypeCell(s.targetedTherapy)}</td>
                           <td>${s.dosage ? `<span class="dosage-pill">${escapeHtml(s.dosage)}</span>` : '--'}</td>
                           <td>${s.quantity ? `<span class="qty-pill">${escapeHtml(s.quantity)}</span>` : '--'}</td>
                           <td>${renderSourceBadge(s.source)}</td>
@@ -3835,7 +3842,8 @@
           <td><span class="schedule-badge">${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || '--')}</span></td>
           <td><div class="protocol-tag">${escapeHtml(s.protocol || '--')}</div></td>
           <td><span class="cycle-pill">Cycle #${s.medCycleNumber}</span></td>
-          <td>${renderBrandCell(s.brand, s.targetedTherapy)}</td>
+          <td>${renderBrandCell(s.brand)}</td>
+          <td>${renderTherapyTypeCell(s.targetedTherapy)}</td>
           <td>${s.dosage ? `<span class="dosage-pill">${escapeHtml(s.dosage)}</span>` : '--'}</td>
           <td>${s.quantity ? `<span class="qty-pill">${escapeHtml(s.quantity)}</span>` : '--'}</td>
           <td>${renderSourceBadge(s.source)}</td>
@@ -4417,18 +4425,6 @@
       if (!payload.brand) {
         showToast('Brand Name is required.', 'error');
         document.getElementById('formBrand').focus();
-        return;
-      }
-
-      if (!payload.dosage) {
-        showToast('Dosage is required.', 'error');
-        document.getElementById('formDosage').focus();
-        return;
-      }
-
-      if (!payload.quantity) {
-        showToast('Quantity Required is required.', 'error');
-        document.getElementById('formQuantity').focus();
         return;
       }
 
