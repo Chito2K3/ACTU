@@ -174,13 +174,14 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
     }
 
     .search-box {
       position: relative;
-      width: 380px;
+      width: 340px;
     }
 
     .search-box input {
@@ -2286,13 +2287,6 @@
             <path d="m8.5 8.5 7 7" />
           </svg>
           Meds Repository
-        </button>
-
-        <!-- Printable & PDF Report Builder Button -->
-        <button class="btn btn-secondary" id="btnOpenReportModal" onclick="openReportModal()"
-          title="Generate Printable & Save-as-PDF Chemotherapy Compounding Report"
-          style="padding: 9px 14px; font-size: 13px; border-color: rgba(14, 165, 233, 0.4);">
-          🖨️ Print Report
         </button>
 
         <!-- Sheet Cleanup Action -->
