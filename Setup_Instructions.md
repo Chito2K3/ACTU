@@ -1,21 +1,22 @@
 # Amang Rodriguez Memorial Medical Center (ARMMC)
-## Ambulatory Cancer Treatment Unit (ACTU) - Web App Deployment Guide
+## Pharmacy Chemotherapy Compounding Log - Web App Deployment Guide
 
-This guide details the streamlined setup and deployment of the **ARMMC ACTU Multi-Schedule Patient Treatment Registry** in your Google Spreadsheet.
+This guide details the streamlined setup and deployment of the **ARMMC Pharmacy Chemotherapy Compounding Log** in your Google Spreadsheet.
 
 ---
 
 ## 1. System Overview
 
 * **Institution Title**: **Amang Rodriguez Memorial Medical Center**
-* **Department**: Ambulatory Cancer Treatment Unit (ACTU)
+* **Application Title**: Pharmacy Chemotherapy Compounding Log
 * **Spreadsheet Tabs Maintained**: Only **2 tabs**:
-  1. **`Master_Patients`**: The clinical database storing `Patient Name`, `Diagnosis`, `Therapy Schedule`, `Chemo Protocol`, `Brand Name`, `Lot Number`, `Expiry Date`, `Dosage`, `Quantity Required`, `Created Date`, and `Last Visit`.
+  1. **`Master_Patients`**: The clinical database storing `Patient Name`, `Diagnosis`, `Therapy Schedule`, `Chemo Protocol`, `Brand Name`, `Lot Number`, `Expiry Date`, `Dosage`, `Quantity Required`, `Funding Source`, `Created Date`, and `Last Visit`.
   2. **`Medicine`**: The formulary source listing all available medicines (DMR Codes & unique descriptions).
 * **Key Features**:
   * **Search by Patient Name & Schedule Pop-up**: Typing a patient name pops up all recorded Chemo Therapy Schedule dates for that patient. Clicking any date instantaneously populates the complete session details into the form.
   * **New Schedule Entry Option**: Clicking `+ Add New Schedule Entry` lets clinicians schedule a new treatment date via date picker while retaining patient baseline information.
   * **Separated Dosage & Quantity**: Clinical dosage (e.g., `440 mg`, `1.3 mg/m²`) and physical quantity required (e.g., `2 Vials`, `1 Box`) are maintained in separate dedicated columns and form inputs.
+  * **Single-Checkbox Funding / Source Classification**: Dedicated single-selection checkbox for **`CAF`**, **`CSPMAP`**, or **`Outside Purchase`** stored in the `Funding Source` column for reporting and filtering.
   * **Batch Tracking**: Includes dedicated fields for **Lot Number** and **Expiry Date** (with date picker) for pharmacy quality control.
   * **Automatic Column Migration**: When the script runs, it automatically verifies your existing `Master_Patients` sheet and safely appends any missing columns without altering or overwriting existing rows.
   * **Non-Destructive Tab Safety**: All existing tabs in the spreadsheet are fully protected and preserved. The script only reads/writes to `Master_Patients` and `Medicine`.

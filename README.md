@@ -1,7 +1,7 @@
 # Amang Rodriguez Memorial Medical Center (ARMMC)
-## Ambulatory Cancer Treatment Unit (ACTU) - Web Application
+## Pharmacy Chemotherapy Compounding Log - Web Application
 
-A modern, responsive Google Apps Script Single-Page Application (SPA) designed for the Ambulatory Cancer Treatment Unit at Amang Rodriguez Memorial Medical Center.
+A modern, responsive Google Apps Script Single-Page Application (SPA) designed for the **Pharmacy Chemotherapy Compounding Log** at Amang Rodriguez Memorial Medical Center.
 
 ---
 
@@ -9,13 +9,14 @@ A modern, responsive Google Apps Script Single-Page Application (SPA) designed f
 
 * **Multi-Schedule Patient Treatment Registry**:
   * Direct bidirectional connection to `Master_Patients` in Google Sheets.
-  * Real-time search by Patient Name, Diagnosis, Therapy Schedule Date, Medicine Protocol, Brand Name, Lot Number, Expiry Date, Dosage, and Quantity.
+  * Real-time search by Patient Name, Diagnosis, Therapy Schedule Date, Medicine Protocol, Brand Name, Lot Number, Expiry Date, Dosage, Quantity, and Funding Source (`CAF`, `CSPMAP`, `Outside Purchase`).
   * **Therapy Schedule Timeline**: Searching or entering a patient name displays all of their recorded treatment dates. Clicking any schedule date instantly populates the complete session record.
   * **Add New Schedule Entry**: Add subsequent chemotherapy dates for returning patients without retyping baseline clinical diagnosis or brand data.
 
-* **Dedicated Clinical Fields (Separated & Batch-Tracked)**:
+* **Dedicated Clinical Fields (Separated, Batch-Tracked & Funding-Classified)**:
   * **Dosage**: Prescribed clinical dosage (e.g. `440 mg`, `1.3 mg/m²`).
   * **Quantity Required**: Physical units needed for pharmacy dispensing (e.g. `2 Vials`, `1 Box`).
+  * **Funding / Acquisition Source**: Single-checkbox selection per session (**`CAF`**, **`CSPMAP`**, or **`Outside Purchase`**) for clean reporting and filtering.
   * **Lot Number**: Manufacturer batch identification.
   * **Expiry Date**: Medication expiration date with interactive date picker.
 
@@ -34,7 +35,7 @@ A modern, responsive Google Apps Script Single-Page Application (SPA) designed f
   * Maintains only two essential tabs in Google Sheets:
     1. `Master_Patients`: Central clinical multi-schedule registry.
     2. `Medicine`: Formulary repository.
-  * Built-in `🧹 Clean Tabs` utility to eliminate obsolete weekly schedule tabs and remove the legacy `Hospital Number` column from `Master_Patients`.
+  * Built-in `🧹 Clean Tabs` utility to remove the legacy `Hospital Number` column from `Master_Patients`, auto-format headers, and safely preserve all existing spreadsheet tabs.
 
 ---
 
@@ -65,4 +66,4 @@ For detailed step-by-step instructions, refer to [`Setup_Instructions.md`](file:
 ## 🏥 Institution
 
 **Amang Rodriguez Memorial Medical Center (ARMMC)**  
-*Ambulatory Cancer Treatment Unit (ACTU)*
+*Pharmacy Chemotherapy Compounding Log*

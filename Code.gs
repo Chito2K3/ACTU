@@ -1,6 +1,6 @@
 /**
  * Amang Rodriguez Memorial Medical Center (ARMMC)
- * Ambulatory Cancer Treatment Unit (ACTU) - Web App Backend
+ * Pharmacy Chemotherapy Compounding Log - Web App Backend
  * Google Apps Script (Code.gs)
  *
  * Core Architecture:
@@ -8,7 +8,7 @@
  * - Multi-Schedule Chemo Therapy Tracking per Patient
  * - Automatic Last Visit date recording
  * - Comprehensive Clinical Batch Tracking (Lot Number & Expiry Date)
- * - Separated Clinical Dosage and Quantity Required
+ * - Separated Clinical Dosage, Quantity Required, and Funding Source (CAF, CSPMAP, Outside Purchase)
  * - Unique Medicine Formulary Engine (Deduplicated, pure medicine names without DMR codes)
  * - On-the-Fly Medicine Addition to the Medicine repository
  * - Automated Spreadsheet Tab Cleanup (Retaining ONLY Master_Patients and Medicine)
@@ -20,7 +20,7 @@
 
 const CONFIG = {
   INSTITUTION_NAME: 'Amang Rodriguez Memorial Medical Center',
-  UNIT_NAME: 'Ambulatory Cancer Treatment Unit (ACTU)',
+  UNIT_NAME: 'Pharmacy Chemotherapy Compounding Log',
   MASTER_PATIENT_SHEET: 'Master_Patients',
   MEDICINE_SHEET: 'Medicine',
   COLORS: {
@@ -36,7 +36,7 @@ const CONFIG = {
  */
 function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('index')
-    .setTitle('Amang Rodriguez Memorial Medical Center - ACTU')
+    .setTitle('Amang Rodriguez Memorial Medical Center - Pharmacy Chemotherapy Compounding Log')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -91,10 +91,11 @@ function ensureRequiredSheets(ss) {
       'Expiry Date',
       'Dosage',
       'Quantity Required',
+      'Funding Source',
       'Created Date',
       'Last Visit'
     ]);
-    masterSheet.getRange(1, 1, 1, 11).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
+    masterSheet.getRange(1, 1, 1, 12).setBackground(CONFIG.COLORS.HEADER_BLUE).setFontColor('#FFFFFF').setFontWeight('bold');
     masterSheet.setFrozenRows(1);
   } else {
     // If sheet exists, ensure all required columns are present
@@ -110,6 +111,7 @@ function ensureRequiredSheets(ss) {
       if (!headers.some(function(h) { return h.includes('LOT'); })) missingHeaders.push('Lot Number');
       if (!headers.some(function(h) { return h.includes('EXPIR'); })) missingHeaders.push('Expiry Date');
       if (!headers.some(function(h) { return h.includes('QUANTITY') || h === 'QTY'; })) missingHeaders.push('Quantity Required');
+      if (!headers.some(function(h) { return h.includes('SOURCE') || h.includes('FUNDING') || h.includes('CAF') || h.includes('CSPMAP'); })) missingHeaders.push('Funding Source');
 
       if (missingHeaders.length > 0) {
         const currentLast = masterSheet.getLastColumn();
@@ -156,6 +158,7 @@ function getMasterPatientColumnMap(sheet) {
     expiryCol: -1,
     dosageCol: -1,
     qtyCol: -1,
+    sourceCol: -1,
     lastVisitCol: -1,
     createdCol: -1,
     hospCol: -1
@@ -171,6 +174,7 @@ function getMasterPatientColumnMap(sheet) {
     else if (h.includes('LOT')) map.lotCol = c;
     else if (h.includes('EXPIR') || h.includes('EXPIRY')) map.expiryCol = c;
     else if (h.includes('QUANTITY') || h === 'QTY' || h.includes('QTY')) map.qtyCol = c;
+    else if (h.includes('SOURCE') || h.includes('FUNDING') || h.includes('CAF') || h.includes('CSPMAP')) map.sourceCol = c;
     else if (h.includes('DOSAGE')) map.dosageCol = c;
     else if (h.includes('LAST VISIT') || h === 'VISIT') map.lastVisitCol = c;
     else if (h.includes('CREATED')) map.createdCol = c;
@@ -217,6 +221,7 @@ function getPatientsList() {
     const lot = colMap.lotCol >= 0 ? String(row[colMap.lotCol] || '').trim() : '';
     const dosage = colMap.dosageCol >= 0 ? String(row[colMap.dosageCol] || '').trim() : '';
     const qty = colMap.qtyCol >= 0 ? String(row[colMap.qtyCol] || '').trim() : '';
+    const source = colMap.sourceCol >= 0 ? String(row[colMap.sourceCol] || '').trim() : '';
 
     // Format dates cleanly MM/DD/YYYY
     let scheduleStr = '';
@@ -245,6 +250,7 @@ function getPatientsList() {
       expiryDate: expiryStr,
       dosage: dosage,
       quantity: qty,
+      source: source,
       lastVisit: lastVisitStr
     });
   }
@@ -323,6 +329,7 @@ function savePatientRecord(payload) {
   const expiryDate = formatToMMDDYYYY(payload.expiryDate || '');
   const dosage = (payload.dosage || '').trim();
   const quantity = (payload.quantity || '').trim();
+  const source = (payload.source || '').trim();
 
   let targetRow = parseInt(payload.rowIndex, 10);
 
@@ -337,6 +344,7 @@ function savePatientRecord(payload) {
     if (colMap.expiryCol >= 0) sheet.getRange(targetRow, colMap.expiryCol + 1).setValue(expiryDate);
     if (colMap.dosageCol >= 0) sheet.getRange(targetRow, colMap.dosageCol + 1).setValue(dosage);
     if (colMap.qtyCol >= 0) sheet.getRange(targetRow, colMap.qtyCol + 1).setValue(quantity);
+    if (colMap.sourceCol >= 0) sheet.getRange(targetRow, colMap.sourceCol + 1).setValue(source);
     if (colMap.lastVisitCol >= 0) sheet.getRange(targetRow, colMap.lastVisitCol + 1).setValue(todayStr);
 
     return {
@@ -347,7 +355,7 @@ function savePatientRecord(payload) {
   }
 
   // Otherwise, append a new row for this therapy schedule session
-  const maxCols = Math.max(sheet.getLastColumn(), 11);
+  const maxCols = Math.max(sheet.getLastColumn(), 12);
   const newRow = new Array(maxCols).fill('');
   if (colMap.nameCol >= 0) newRow[colMap.nameCol] = targetName;
   if (colMap.diagCol >= 0) newRow[colMap.diagCol] = diagnosis;
@@ -358,6 +366,7 @@ function savePatientRecord(payload) {
   if (colMap.expiryCol >= 0) newRow[colMap.expiryCol] = expiryDate;
   if (colMap.dosageCol >= 0) newRow[colMap.dosageCol] = dosage;
   if (colMap.qtyCol >= 0) newRow[colMap.qtyCol] = quantity;
+  if (colMap.sourceCol >= 0) newRow[colMap.sourceCol] = source;
   if (colMap.createdCol >= 0) newRow[colMap.createdCol] = todayStr;
   if (colMap.lastVisitCol >= 0) newRow[colMap.lastVisitCol] = todayStr;
 
@@ -478,7 +487,7 @@ function getUniqueMedicineList() {
     }
   }
 
-  // 2. Retain any recognized oncology protocols recorded in Master_Patients
+  // 2. Retain any protocols recorded in Master_Patients so active regimens are always in the dropdown
   const masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (masterSheet) {
     const lastRow = masterSheet.getLastRow();
@@ -495,7 +504,7 @@ function getUniqueMedicineList() {
           seenAll.add(key);
           allMeds.push(proto);
         }
-        if (isRecognizedOncologyMedicine(proto) && !seenOnco.has(key)) {
+        if (!seenOnco.has(key)) {
           seenOnco.add(key);
           oncologyMeds.push(proto);
         }
@@ -578,7 +587,7 @@ function cleanupSpreadsheetTabs() {
   // NOTE: Strictly non-destructive. We do NOT delete any sheets to protect existing tabs!
   const deletedTabs = [];
 
-  // Remove 'Hospital Number' column(s) from Master_Patients only
+  // Remove 'Hospital Number' column(s) from Master_Patients only and format headers
   let hospColRemoved = false;
   const masterSheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
   if (masterSheet && masterSheet.getLastColumn() > 0) {
@@ -590,6 +599,15 @@ function cleanupSpreadsheetTabs() {
         masterSheet.deleteColumn(c + 1);
         hospColRemoved = true;
       }
+    }
+
+    const updatedLastCol = masterSheet.getLastColumn();
+    if (updatedLastCol > 0) {
+      masterSheet.getRange(1, 1, 1, updatedLastCol)
+        .setBackground(CONFIG.COLORS.HEADER_BLUE)
+        .setFontColor(CONFIG.COLORS.WHITE)
+        .setFontWeight('bold');
+      masterSheet.setFrozenRows(1);
     }
   }
 
