@@ -389,6 +389,64 @@ function savePatientRecord(payload) {
 }
 
 /**
+ * Saves multiple medicine entries for a single patient/schedule in one batch.
+ */
+function saveMultiplePatientRecords(payload) {
+  if (!payload || !payload.name || !payload.name.trim()) {
+    throw new Error('Patient name is required.');
+  }
+  const medicines = Array.isArray(payload.medicines) ? payload.medicines : [];
+  if (medicines.length === 0) {
+    throw new Error('At least one medicine entry is required.');
+  }
+
+  const ss = getSpreadsheet();
+  ensureRequiredSheets(ss);
+  const sheet = ss.getSheetByName(CONFIG.MASTER_PATIENT_SHEET);
+  const colMap = getMasterPatientColumnMap(sheet);
+  const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MM/dd/yyyy');
+
+  const targetName = payload.name.trim();
+  const diagnosis = (payload.diagnosis || '').trim();
+  const scheduleDate = formatToMMDDYYYY(payload.scheduleDate || todayStr);
+  const maxCols = Math.max(sheet.getLastColumn(), 13);
+
+  const rowsToAppend = [];
+  for (let i = 0; i < medicines.length; i++) {
+    const med = medicines[i] || {};
+    const brand = (med.brand || '').trim();
+    if (!brand) {
+      throw new Error('Brand Name is required for Medicine #' + (i + 1) + '.');
+    }
+
+    const newRow = new Array(maxCols).fill('');
+    if (colMap.nameCol >= 0) newRow[colMap.nameCol] = targetName;
+    if (colMap.diagCol >= 0) newRow[colMap.diagCol] = diagnosis;
+    if (colMap.schedCol >= 0) newRow[colMap.schedCol] = scheduleDate;
+    if (colMap.protoCol >= 0) newRow[colMap.protoCol] = (med.protocol || '').trim();
+    if (colMap.brandCol >= 0) newRow[colMap.brandCol] = brand;
+    if (colMap.targetedCol >= 0) newRow[colMap.targetedCol] = (med.targetedTherapy || '').trim();
+    if (colMap.lotCol >= 0) newRow[colMap.lotCol] = (med.lotNumber || '').trim();
+    if (colMap.expiryCol >= 0) newRow[colMap.expiryCol] = formatToMMDDYYYY(med.expiryDate || '');
+    if (colMap.dosageCol >= 0) newRow[colMap.dosageCol] = (med.dosage || '').trim();
+    if (colMap.qtyCol >= 0) newRow[colMap.qtyCol] = (med.quantity || '').trim();
+    if (colMap.sourceCol >= 0) newRow[colMap.sourceCol] = (med.source || '').trim();
+    if (colMap.createdCol >= 0) newRow[colMap.createdCol] = todayStr;
+    if (colMap.lastVisitCol >= 0) newRow[colMap.lastVisitCol] = todayStr;
+    rowsToAppend.push(newRow);
+  }
+
+  const startRow = sheet.getLastRow() + 1;
+  sheet.getRange(startRow, 1, rowsToAppend.length, maxCols).setValues(rowsToAppend);
+
+  return {
+    success: true,
+    count: rowsToAppend.length,
+    message: rowsToAppend.length + ' medicine compound(s) for "' + targetName + '" (' + scheduleDate + ') recorded successfully.'
+  };
+}
+
+/**
  * Deletes a patient treatment schedule row from Master_Patients.
  */
 function deletePatientRecord(payload) {
