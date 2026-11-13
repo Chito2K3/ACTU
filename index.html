@@ -3590,7 +3590,6 @@
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                   ${escapeHtml(formatDateMMDDYYYY(latest.scheduleDate))}
                 </span>
-                ${grp.totalCompounds > 1 ? `<small style="display: block; font-size: 10.5px; color: var(--text-dim); margin-top: 3px;">Cycle #${latest.medCycleNumber || 1} (Latest)</small>` : ''}
               ` : '<span style="color: var(--text-dim);">--</span>'}
             </td>
             <td>
@@ -3788,7 +3787,7 @@
       const dropdown = elements.sessionDropdownSelect;
       dropdown.innerHTML = sessions.map(s => {
         const isSelected = s.rowIndex === activeRowIndex;
-        return `<option value="${s.rowIndex}" ${isSelected ? 'selected' : ''}>Compound #${s.compoundNumber} (Cycle #${s.medCycleNumber}): ${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || 'No Date')}</option>`;
+        return `<option value="${s.rowIndex}" ${isSelected ? 'selected' : ''}>Compound #${s.compoundNumber}: ${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || 'No Date')}</option>`;
       }).join('');
 
       if (activeRowIndex === -1) {
@@ -3802,7 +3801,7 @@
       strip.innerHTML = sessions.map(s => {
         const isActive = s.rowIndex === activeRowIndex;
         return `
-          <div class="timeline-chip ${isActive ? 'active' : ''}" id="chip-session-${s.rowIndex}" onclick="selectSpecificSession(${s.rowIndex})" title="Compound #${s.compoundNumber} (Cycle #${s.medCycleNumber}): ${escapeQuotes(formatDateMMDDYYYY(s.scheduleDate))}">
+          <div class="timeline-chip ${isActive ? 'active' : ''}" id="chip-session-${s.rowIndex}" onclick="selectSpecificSession(${s.rowIndex})" title="Compound #${s.compoundNumber}: ${escapeQuotes(formatDateMMDDYYYY(s.scheduleDate))}">
             <span class="cycle-num-tag">#${s.compoundNumber}</span>
             <span>📅 ${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || 'No Date')}</span>
           </div>
@@ -3863,7 +3862,7 @@
     }
 
     function populateFormWithSession(item) {
-      const cycleInfo = item.compoundNumber ? ` (Compound #${item.compoundNumber} • Cycle #${item.medCycleNumber || 1})` : '';
+      const cycleInfo = item.compoundNumber ? ` (Compound #${item.compoundNumber})` : '';
       document.getElementById('modalTitle').textContent = `Patient Treatment: ${item.name}${cycleInfo}`;
       document.getElementById('formRowIndex').value = item.rowIndex || '';
       document.getElementById('formIsNewSchedule').value = 'false';
@@ -3948,7 +3947,6 @@
           <td><span class="compound-pill">Compound #${s.compoundNumber}</span></td>
           <td><span class="schedule-badge">${escapeHtml(formatDateMMDDYYYY(s.scheduleDate) || '--')}</span></td>
           <td><div class="protocol-tag">${escapeHtml(s.protocol || '--')}</div></td>
-          <td><span class="cycle-pill">Cycle #${s.medCycleNumber}</span></td>
           <td>${renderBrandCell(s.brand)}</td>
           <td>${renderTherapyTypeCell(s.targetedTherapy)}</td>
           <td>${s.dosage ? `<span class="dosage-pill">${escapeHtml(s.dosage)}</span>` : '--'}</td>
@@ -4385,8 +4383,7 @@
                     <td style="font-weight: 800; text-transform: uppercase;">${escapeHtml(s.name || '-')}</td>
                     <td style="font-weight: 700;">${escapeHtml(s.diagnosis || '-')}</td>
                     <td style="font-size: 10.5px; font-weight: 700;">
-                      Compound #${s.compoundNumber || 1}<br>
-                      <span style="color: #475569; font-weight: 600;">Cycle #${s.medCycleNumber || 1}</span>
+                      Compound #${s.compoundNumber || 1}
                     </td>
                     <td style="font-weight: 700;">${escapeHtml(s.protocol || '-')}</td>
                     <td style="font-weight: 700; text-transform: uppercase;">${escapeHtml(s.brand || '-')}</td>
