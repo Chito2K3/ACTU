@@ -89,10 +89,18 @@
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
     }
 
     /* Header */
@@ -354,7 +362,7 @@
       max-width: 1600px;
       width: 100%;
       margin: 0 auto;
-      padding: 24px;
+      padding: 12px 20px 10px;
       flex: 1;
     }
 
@@ -362,15 +370,15 @@
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .stat-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 18px 20px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -413,9 +421,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
 
     .section-title {
@@ -440,8 +448,18 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      overflow-x: auto;
+      flex: 1;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
       box-shadow: var(--shadow-sm);
+    }
+
+    .patient-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg-subtle);
     }
 
     .patient-table {
@@ -2239,7 +2257,7 @@
   </style>
 </head>
 
-<body data-theme="dark">
+<body data-theme="light">
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay">
